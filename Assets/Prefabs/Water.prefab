@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8366819347208230791}
   - component: {fileID: 8366819347208230788}
-  - component: {fileID: 2411188245121365367}
+  - component: {fileID: -3862547434278591566}
+  - component: {fileID: 5994094008674464007}
   m_Layer: 0
-  m_Name: Circle
+  m_Name: Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -83,7 +84,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2411188245121365367
+--- !u!58 &-3862547434278591566
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8366819347208230789}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.49999997
+--- !u!114 &5994094008674464007
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -95,3 +112,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07f91cc0936a1fb489e4ff7ed7481ecc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 10

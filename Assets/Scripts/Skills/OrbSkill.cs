@@ -3,7 +3,7 @@ using UnityEngine;
 public class OrbSkill : MonoBehaviour
 {
     private Vector3 direction;
-    public float moveSpeed = 10f;
+    public float moveSpeed = 3f;
 
     public void Setup(Vector3 direction)
     {

@@ -13,5 +13,10 @@ namespace Utils
         {
             return camera.ScreenToWorldPoint(screenPosition);
         }
+
+        public static float HypotenuseLength(float sideALength, float sideBLength)
+        {
+            return Mathf.Sqrt(sideALength * sideALength + sideBLength * sideBLength);
+        }
     }
 }

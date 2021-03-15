@@ -5,13 +5,18 @@ using System.Runtime.InteropServices;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Options")]
+    [Header("Character")]
     public float MoveSpeed = 2.0f;
 
+    [Header("Skills")]
+    public string sendSkill = "earth";
+    public float skillOffset = 1.0f;
+
+    [Header("Objects")]
     public Transform pfWater;
     public Transform pfFire;
     public Transform pfEarth;
-
-    public string sendSkill = "earth";
 
     private Rigidbody2D rb;
 
@@ -88,26 +93,30 @@ WebGLInput.captureAllKeyboardInput = false;
 
     private void PlayerAction(object sender, OnActiontEventArgs e)
     {
+        var direction = (e.shootPosition - e.endPointPosition).normalized;
+        var len = UtilsClass.HypotenuseLength(direction.x, direction.y);
+        var factor = 1.0f / (len == 0? Mathf.Epsilon: len);
+        direction = new Vector3(direction.x * factor, direction.y * factor, direction.z);
+
+        var newRoot = new Vector3(e.endPointPosition.x + direction.x * skillOffset, e.endPointPosition.y + direction.y * skillOffset, e.endPointPosition.z);
+        Transform inst = null;
         if (e.skillName == "water") {
-            var newPos = new Vector3(e.endPointPosition.x, e.endPointPosition.y + 0.8f, e.endPointPosition.z);
-            var waterTransform = Instantiate(pfWater, newPos, Quaternion.identity);
-            var direction = (e.shootPosition - newPos).normalized;
-            waterTransform.GetComponent<OrbSkill>().Setup(direction);
+            inst = pfWater;
         }
         else if (e.skillName == "fire")
         {
-            var newPos = new Vector3(e.endPointPosition.x, e.endPointPosition.y + 0.8f, e.endPointPosition.z);
-            var fireTransform = Instantiate(pfFire, newPos, Quaternion.identity);
-            var direction = (e.shootPosition - newPos).normalized;
-            fireTransform.GetComponent<OrbSkill>().Setup(direction);
+            inst = pfFire;
         }
         else if (e.skillName == "earth")
         {
-            var newPos = new Vector3(e.endPointPosition.x, e.endPointPosition.y + 0.8f, e.endPointPosition.z);
-            var fireTransform = Instantiate(pfEarth, newPos, Quaternion.identity);
-            var direction = (e.shootPosition - newPos).normalized;
-            fireTransform.GetComponent<OrbSkill>().Setup(direction);
+            inst = pfEarth;
         }
+        else
+        {
+            // not found
+            return;
+        }
+        Instantiate(pfEarth, newRoot, Quaternion.identity).GetComponent<OrbSkill>().Setup(direction);
     }
 
     [DllImport("__Internal")]

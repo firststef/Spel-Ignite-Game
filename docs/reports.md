@@ -70,3 +70,25 @@ https://adventure.land/
 __Status:__
 
 This week i worked on creating a coding interface in React and embedding Unity in the React project. Whenver a click is made, Unity sends a notification to React and the code is executed - for each spell a function in unity is called.
+
+### __Week 3__
+I integrated react and unity, you can control a character and press a click to cast a skill that is written.
+
+### __Week 4__
+I created a small prototype for the game. 
+Features:
+- character movement
+- enemy ai follows you around
+- on right click the spells are cast
+- tilemap and enemy with collision
+- if enemy is hit by fire is destroyed
+- npc that shows you a puzzle and the puzzle itself
+- 3 skills: fire, water, earth
+- character camera movement
+
+### __Week 5__
+- featurefixing
+- added pause
+- experimented with reactunity, and other options to gain performance
+- added first build with electron
+- ...

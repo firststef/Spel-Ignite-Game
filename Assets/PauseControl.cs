@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Runtime.InteropServices;
 
 public class PauseControl : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class PauseControl : MonoBehaviour
         {
             Time.timeScale = gameIsPaused ? 0f : 1;
             pauseOverlay.SetActive(!pauseOverlay.activeSelf);
+            GamePaused();
             changed = false;
         }
     }
@@ -29,4 +31,7 @@ public class PauseControl : MonoBehaviour
         gameIsPaused = !gameIsPaused;
         changed = true;
     }
+
+    [DllImport("__Internal")]
+    private static extern void GamePaused();
 }

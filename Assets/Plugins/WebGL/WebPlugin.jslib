@@ -5,4 +5,7 @@ mergeInto(LibraryManager.library, {
   GamePaused: function () {
     ReactUnityWebGL.GamePaused();
   },
+  GameUnpaused: function () {
+    ReactUnityWebGL.GameUnpaused();
+  },
 });

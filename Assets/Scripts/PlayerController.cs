@@ -3,6 +3,7 @@ using UnityEngine;
 using Utils;
 using System.Runtime.InteropServices;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
     [Header("Options")]

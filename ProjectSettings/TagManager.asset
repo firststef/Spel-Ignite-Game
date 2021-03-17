@@ -38,9 +38,27 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Default
-    uniqueID: 0
+  - name: Ground
+    uniqueID: 2406339781
+    locked: 0
+  - name: Bush
+    uniqueID: 2135292639
+    locked: 0
+  - name: Walls
+    uniqueID: 3545748755
+    locked: 0
+  - name: Enemy
+    uniqueID: 782924713
+    locked: 0
+  - name: Player
+    uniqueID: 3805099693
+    locked: 0
+  - name: Shadow
+    uniqueID: 4157242087
     locked: 0
   - name: Top
     uniqueID: 136006005
+    locked: 0
+  - name: Default
+    uniqueID: 0
     locked: 0

@@ -1,5 +1,24 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!95 &6282942707925087721
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6891948140961819279}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6cdb33f004807e2489ab9699a2d9eaf5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &7757481576126124462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25,12 +44,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8366819347208230788, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 2611912311813065390, guid: 320d0fcbc304e4043b96a86af67dd134, type: 3}
+    - target: {fileID: 8366819347208230788, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8366819347208230788, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
       propertyPath: m_Color.b
-      value: 0.08274889
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8366819347208230788, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
       propertyPath: m_Color.g
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8366819347208230788, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
       propertyPath: m_Color.r
@@ -54,11 +81,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8366819347208230791, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.42275822
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8366819347208230791, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.42869163
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8366819347208230791, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
       propertyPath: m_LocalPosition.x

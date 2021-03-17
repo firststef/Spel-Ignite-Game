@@ -13,6 +13,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
+--- !u!95 &5164097222469510324
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5811397983035847790}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6cdb33f004807e2489ab9699a2d9eaf5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &2646659114233734123
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27,7 +46,7 @@ PrefabInstance:
     - target: {fileID: 8366819347208230788, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 7482667652216324306, guid: db750325989564987a34393247d883b4, type: 3}
+      objectReference: {fileID: 2611912311813065390, guid: 320d0fcbc304e4043b96a86af67dd134, type: 3}
     - target: {fileID: 8366819347208230788, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
       propertyPath: m_Color.b
       value: 0

@@ -4,12 +4,11 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class EnemyBehaviour : MonoBehaviour
+public class EnemyMovement : MonoBehaviour
 {
     NavMeshAgent ag;
     public Transform target;
 
-    // Start is called before the first frame update
     void Start()
     {
         ag = GetComponent<NavMeshAgent>();
@@ -17,18 +16,9 @@ public class EnemyBehaviour : MonoBehaviour
         ag.updateUpAxis = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         transform.position = new Vector3(transform.position.x, transform.position.y, -1);
         ag.SetDestination(new Vector3(target.position.x, target.position.y, -1));
-    }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.name.StartsWith("Fire"))
-        {
-            Destroy(gameObject);
-        }
     }
 }

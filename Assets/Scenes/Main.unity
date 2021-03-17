@@ -1521,7 +1521,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MoveSpeed: 5
   sendSkill: fire
-  skillOffset: 1
+  skillOffset: 0.8
   pfWater: {fileID: 8366819347208230791, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
   pfFire: {fileID: 6891948140961819277, guid: dc7a3212ced04154191b1423b1821c81, type: 3}
   pfEarth: {fileID: 5811397983035847788, guid: 56fefaf3466523440baed26b589f4e56, type: 3}

@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Skills")]
     public string sendSkill = "earth";
-    public float skillOffset = 1.0f;
+    public float skillOffset = 0.8f;
 
     [Header("Objects")]
     public Transform pfWater;
@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public Transform pfEarth;
 
     private Rigidbody2D rb;
+    private bool isKeyPressed = false;
 
     void Start()
     {
@@ -69,11 +70,20 @@ WebGLInput.captureAllKeyboardInput = false;
     {
         if (Input.GetMouseButtonDown(1))
         {
+            if (!isKeyPressed)
+            {
+                isKeyPressed = true;
+
 #if !UNITY_EDITOR && UNITY_WEBGL
-            RequestAction();
+                RequestAction();
 #else
-            TriggerAction(sendSkill);
+                TriggerAction(sendSkill);
 #endif
+            }
+        }
+        else if (isKeyPressed)
+        {
+            isKeyPressed = false;
         }
     }
 
@@ -116,7 +126,7 @@ WebGLInput.captureAllKeyboardInput = false;
             // not found
             return;
         }
-        Instantiate(pfEarth, newRoot, Quaternion.identity).GetComponent<OrbSkill>().Setup(direction);
+        Instantiate(inst, newRoot, Quaternion.identity).GetComponent<OrbSkill>().Setup(direction);
     }
 
     [DllImport("__Internal")]

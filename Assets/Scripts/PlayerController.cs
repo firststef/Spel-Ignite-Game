@@ -76,7 +76,7 @@ WebGLInput.captureAllKeyboardInput = false;
                 isKeyPressed = true;
 
 #if !UNITY_EDITOR && UNITY_WEBGL
-                RequestAction();
+                RequestAction("test 1234 12345");
 #else
                 TriggerAction(sendSkill);
 #endif
@@ -131,5 +131,5 @@ WebGLInput.captureAllKeyboardInput = false;
     }
 
     [DllImport("__Internal")]
-    private static extern void RequestAction();
+    private static extern void RequestAction(string str);
 }

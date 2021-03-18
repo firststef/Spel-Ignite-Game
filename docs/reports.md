@@ -91,4 +91,8 @@ Features:
 - added pause
 - experimented with reactunity, and other options to gain performance
 - added first build with electron
-- ...
+- moved editor to sidebar
+- refactoring
+- added character and enemy sprites
+- added some ui stuff
+- added somwewhat working example of blockly

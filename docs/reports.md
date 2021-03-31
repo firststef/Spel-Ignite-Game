@@ -91,4 +91,19 @@ Features:
 - added pause
 - experimented with reactunity, and other options to gain performance
 - added first build with electron
-- ...
+- moved editor to sidebar
+- refactoring
+- added character and enemy sprites
+- added some ui stuff
+- added somwewhat working example of blockly
+
+### __Week 6__
+- a lot of refactoring
+- featured concept of collectibles (blocks that enter your inventory)
+- trying to add continuous delivery
+
+### __Week 7__
+- even more refactoring
+- experimenting with blockly
+- written a generator for spel in blockly
+- rewrote the spel grammar & parser

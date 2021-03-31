@@ -2,6 +2,10 @@ using System;
 using UnityEngine;
 using Utils;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using Unity.Jobs;
+using Unity.Collections;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
@@ -22,14 +26,14 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private bool isKeyPressed = false;
 
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
 
         OnAction += PlayerAction;
 
 #if !UNITY_EDITOR && UNITY_WEBGL
-WebGLInput.captureAllKeyboardInput = false;
+        WebGLInput.captureAllKeyboardInput = false;
 #endif
     }
 
@@ -38,6 +42,8 @@ WebGLInput.captureAllKeyboardInput = false;
         HandleMovement();
         HandleActions();
     }
+
+    /* Actions */
 
     private void HandleMovement()
     {
@@ -76,7 +82,7 @@ WebGLInput.captureAllKeyboardInput = false;
                 isKeyPressed = true;
 
 #if !UNITY_EDITOR && UNITY_WEBGL
-                RequestAction("test 1234 12345");
+                RequestAction();
 #else
                 TriggerAction(sendSkill);
 #endif
@@ -131,5 +137,94 @@ WebGLInput.captureAllKeyboardInput = false;
     }
 
     [DllImport("__Internal")]
-    private static extern void RequestAction(string str);
+    private static extern void RequestAction();
+
+    /* Collision */
+
+    [DllImport("__Internal")]
+    private static extern void UpdateInventory(string str);
+
+    public List<string> inventory = new List<string>();
+
+    struct UpdateJob : IJob
+    {
+        [DeallocateOnJobCompletion]
+        public NativeArray<char> inventory;
+
+        public void Execute()
+        {
+            var buffer = new char[inventory.Length];
+            inventory.CopyTo(buffer);
+            var read = new string(buffer);
+            Debug.Log(read);
+            //Debug.Log(JsonUtility.FromJson<List<string>>(read)[0]);
+#if !UNITY_EDITOR && UNITY_WEBGL
+            UpdateInventory(read);
+#endif
+        }
+    }
+
+
+    [Serializable]
+    struct DataUpdate
+    {
+        public List<string> inventory;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.name.StartsWith("Block"))
+        {
+            var item = collision.GetComponent<Collectible>();
+            if (item && item.id != "")
+            {
+                inventory.Add(item.id);
+
+                DataUpdate data;
+                data.inventory = inventory;
+
+                var write = JsonUtility.ToJson(data).ToCharArray();
+                var position = new NativeArray<char>(write.Length, Allocator.Persistent);
+                position.CopyFrom(write);
+
+                var job = new UpdateJob()
+                {
+                    inventory = position
+                };
+                var handle = job.Schedule();
+
+                Destroy(collision.gameObject);
+                handle.Complete();
+            }
+        }
+    }
+
+    [Header("Stats")]
+    public int playerHealth = 10;
+    public Transform healthBar;
+
+    public void DamagePlayer()
+    {
+        playerHealth -= 1;
+        RefreshHealthBar();
+    }
+
+    void RefreshHealthBar()
+    {
+        int auxH = 0;
+        foreach (Transform child in healthBar)
+        {
+            child.GetComponent<Image>().fillAmount = 0;
+            if (auxH < playerHealth)
+            {
+                child.GetComponent<Image>().fillAmount += 0.5f;
+                auxH++;
+            }
+            if (auxH < playerHealth)
+            {
+                child.GetComponent<Image>().fillAmount += 0.5f;
+                auxH++;
+            }
+        }
+    }
 }

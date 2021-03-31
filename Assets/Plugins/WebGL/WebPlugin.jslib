@@ -1,12 +1,15 @@
 mergeInto(LibraryManager.library, {
-  RequestAction: function (str) {
+  UpdateInventory: function (str) {
     var newStr = Pointer_stringify(str);
-    ReactUnityWebGL.RequestAction(newStr);
+    ReactUnityWebGL.UpdateInventory(newStr);
   },
   GamePaused: function () {
     ReactUnityWebGL.GamePaused();
   },
   GameUnpaused: function () {
     ReactUnityWebGL.GameUnpaused();
+  },
+  RequestAction: function () {
+    ReactUnityWebGL.RequestAction();
   },
 });

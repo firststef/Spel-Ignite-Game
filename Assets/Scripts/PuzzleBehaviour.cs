@@ -7,7 +7,6 @@ public class PuzzleBehaviour : MonoBehaviour
     public GameObject npc;
     private List<string> last = new List<string>();
 
-    // Update is called once per frame
     private void OnCollisionEnter2D(Collision2D collision)
     {
         int i = 0;

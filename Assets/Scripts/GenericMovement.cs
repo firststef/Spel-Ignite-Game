@@ -7,18 +7,18 @@ public class GenericMovement : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Animator animator;
-    private SpriteRenderer renderer;
+    private SpriteRenderer rd;
 
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        renderer = GetComponent<SpriteRenderer>();
+        rd = GetComponent<SpriteRenderer>();
     }
 
     void Update()
     {
         animator.SetBool("Moving", rb.velocity.x != 0 || rb.velocity.y != 0);
-        renderer.flipX = rb.velocity.x == 0 ? renderer.flipX : rb.velocity.x < 0;
+        rd.flipX = rb.velocity.x == 0 ? rd.flipX : rb.velocity.x < 0;
     }
 }

@@ -6,22 +6,59 @@ using System.Collections.Generic;
 using Unity.Jobs;
 using Unity.Collections;
 using UnityEngine.UI;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Spells;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(SpelRuntime))]
 public class PlayerController : MonoBehaviour
 {
-    [Header("Options")]
+    /* Stats */
+
     [Header("Character")]
     public float MoveSpeed = 2.0f;
 
-    [Header("Skills")]
-    public string sendSkill = "earth";
-    public float skillOffset = 0.8f;
+    [Header("Stats")]
+    public int playerHealth = 10;
+    public const int maxMana = 40;
+    public int playerMana = maxMana;
 
-    [Header("Objects")]
-    public Transform pfWater;
-    public Transform pfFire;
-    public Transform pfEarth;
+    public void DamagePlayer(int damage)
+    {
+        playerHealth -= damage;
+        RefreshHealthBar();
+    }
+
+    void RefreshHealthBar()
+    {
+        int auxH = 0;
+        foreach (Transform child in healthBar)
+        {
+            child.GetComponent<Image>().fillAmount = 0;
+            if (auxH < playerHealth)
+            {
+                child.GetComponent<Image>().fillAmount += 0.5f;
+                auxH++;
+            }
+            if (auxH < playerHealth)
+            {
+                child.GetComponent<Image>().fillAmount += 0.5f;
+                auxH++;
+            }
+        }
+    }
+
+    public void ConsumeMana(int mana)
+    {
+        playerMana -= mana;
+        Debug.Log(playerMana / maxMana);
+        manaBar.GetComponent<Image>().fillAmount = playerMana / maxMana;
+    }
+
+    [Header("Debug")]
+    public string sendSkill;
+    public float skillOffset = 0.8f;
 
     private Rigidbody2D rb;
     private bool isKeyPressed = false;
@@ -29,11 +66,38 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpelRuntime>();
 
-        OnAction += PlayerAction;
-
-#if !UNITY_EDITOR && UNITY_WEBGL
-        WebGLInput.captureAllKeyboardInput = false;
+#if UNITY_EDITOR
+        var skill = new {
+            block = new {
+                items = new[] {
+                    new {
+                        which = "statement",
+                        statement = new {
+                            expr= new {
+                                name= "playerMana",
+                                type= "NamedExpression"
+                            },
+                            stmts= new[] {
+                                new {
+                                    expr=new {
+                                        name= "fire",
+                                        type= "NamedExpression"
+                                    },
+                                    type= "Call"
+                                }
+                            },
+                            type = "WhileStatement"
+                        },
+                        type = "BlockItem"
+                    }
+                },
+                type = "Block"
+            },
+            type = "Document"
+        };
+        sendSkill = JsonConvert.SerializeObject(skill);
 #endif
     }
 
@@ -65,14 +129,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public event EventHandler<OnActiontEventArgs> OnAction;
-    public class OnActiontEventArgs : EventArgs
-    {
-        public Vector3 endPointPosition;
-        public Vector3 shootPosition;
-        public string skillName;
-    }
-
     private void HandleActions()
     {
         if (Input.GetMouseButtonDown(1))
@@ -84,7 +140,7 @@ public class PlayerController : MonoBehaviour
 #if !UNITY_EDITOR && UNITY_WEBGL
                 RequestAction();
 #else
-                TriggerAction(sendSkill);
+                sr.TriggerAction(sendSkill);
 #endif
             }
         }
@@ -94,57 +150,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void TriggerAction(string skillName)
+    public void CastSpell(ICastSpell spell)
     {
-        var mousePosition = UtilsClass.GetMousePosition2D();
-        var direction = (mousePosition - transform.position).normalized;
-        var angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-        OnAction?.Invoke(this, new OnActiontEventArgs
+        if (spell.isPlayerWorthy(this))
         {
-            endPointPosition = transform.position,
-            shootPosition = mousePosition,
-            skillName = skillName
-        });
+            spell.cast();
+            spell.applyConsequences(this);
+        }
     }
-
-    private void PlayerAction(object sender, OnActiontEventArgs e)
-    {
-        var direction = (e.shootPosition - e.endPointPosition).normalized;
-        var len = UtilsClass.HypotenuseLength(direction.x, direction.y);
-        var factor = 1.0f / (len == 0? Mathf.Epsilon: len);
-        direction = new Vector3(direction.x * factor, direction.y * factor, direction.z);
-
-        var newRoot = new Vector3(e.endPointPosition.x + direction.x * skillOffset, e.endPointPosition.y + direction.y * skillOffset, e.endPointPosition.z);
-        Transform inst = null;
-        if (e.skillName == "water") {
-            inst = pfWater;
-        }
-        else if (e.skillName == "fire")
-        {
-            inst = pfFire;
-        }
-        else if (e.skillName == "earth")
-        {
-            inst = pfEarth;
-        }
-        else
-        {
-            // not found
-            return;
-        }
-        Instantiate(inst, newRoot, Quaternion.identity).GetComponent<OrbSkill>().Setup(direction);
-    }
-
-    [DllImport("__Internal")]
-    private static extern void RequestAction();
 
     /* Collision */
 
-    [DllImport("__Internal")]
-    private static extern void UpdateInventory(string str);
-
     public List<string> inventory = new List<string>();
+
+    [Serializable]
+    struct DataUpdate
+    {
+        public List<string> inventory;
+    }
 
     struct UpdateJob : IJob
     {
@@ -156,19 +179,12 @@ public class PlayerController : MonoBehaviour
             var buffer = new char[inventory.Length];
             inventory.CopyTo(buffer);
             var read = new string(buffer);
-            Debug.Log(read);
+            //Debug.Log(read);
             //Debug.Log(JsonUtility.FromJson<List<string>>(read)[0]);
 #if !UNITY_EDITOR && UNITY_WEBGL
             UpdateInventory(read);
 #endif
         }
-    }
-
-
-    [Serializable]
-    struct DataUpdate
-    {
-        public List<string> inventory;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -183,7 +199,7 @@ public class PlayerController : MonoBehaviour
                 DataUpdate data;
                 data.inventory = inventory;
 
-                var write = JsonUtility.ToJson(data).ToCharArray();
+                var write = JsonConvert.SerializeObject(data).ToCharArray();
                 var position = new NativeArray<char>(write.Length, Allocator.Persistent);
                 position.CopyFrom(write);
 
@@ -199,32 +215,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    [Header("Stats")]
-    public int playerHealth = 10;
+    /* External */
+
+    [DllImport("__Internal")]
+    private static extern void RequestAction();
+
+    private SpelRuntime sr;
+
+    [DllImport("__Internal")]
+    private static extern void UpdateInventory(string str);
+
+    [Header("UI")]
     public Transform healthBar;
-
-    public void DamagePlayer()
-    {
-        playerHealth -= 1;
-        RefreshHealthBar();
-    }
-
-    void RefreshHealthBar()
-    {
-        int auxH = 0;
-        foreach (Transform child in healthBar)
-        {
-            child.GetComponent<Image>().fillAmount = 0;
-            if (auxH < playerHealth)
-            {
-                child.GetComponent<Image>().fillAmount += 0.5f;
-                auxH++;
-            }
-            if (auxH < playerHealth)
-            {
-                child.GetComponent<Image>().fillAmount += 0.5f;
-                auxH++;
-            }
-        }
-    }
+    public Transform manaBar;
 }

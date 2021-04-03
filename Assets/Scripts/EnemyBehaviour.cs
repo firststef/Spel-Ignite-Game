@@ -20,7 +20,7 @@ public class EnemyBehaviour : MonoBehaviour
         animator.SetBool("Attacking", isClose);
         if (isClose && (System.DateTime.Now - lastAttack).TotalSeconds > 1)
         {
-            player.DamagePlayer();
+            player.DamagePlayer(1);
             lastAttack = System.DateTime.Now;
         }
     }

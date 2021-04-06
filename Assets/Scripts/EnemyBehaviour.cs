@@ -25,9 +25,9 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    public void TakeDamage(string spell, int amount=0)
     {
-        if (collision.gameObject.name.StartsWith("Fire"))
+        if (spell.StartsWith("Fire"))
         {
             Destroy(transform.parent.gameObject);
         }

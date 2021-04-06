@@ -18,4 +18,21 @@ public class OrbSkill : MonoBehaviour
     {
         transform.position += moveSpeed * direction * Time.deltaTime;
     }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        var enemy = collision.gameObject.GetComponent<EnemyBehaviour>();
+        if (enemy)
+        {
+            enemy.TakeDamage(collision.gameObject.name);
+        }
+
+        var player = collision.gameObject.GetComponent<PlayerController>();
+        if (player)
+        {
+            player.DamagePlayer(1);
+        }
+
+        Destroy(gameObject);
+    }
 }

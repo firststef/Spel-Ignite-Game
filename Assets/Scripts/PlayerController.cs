@@ -1,111 +1,28 @@
 using System;
 using UnityEngine;
-using Utils;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using Unity.Jobs;
 using Unity.Collections;
-using UnityEngine.UI;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Spells;
+using UnityEngine.UI;
+using Utils;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpelRuntime))]
+[RequireComponent(typeof(StatsController))]
 public class PlayerController : MonoBehaviour
 {
-    /* Stats */
+    private StatsController stats;
 
-    [Header("Character")]
-    public float MoveSpeed = 2.0f;
-
-    [Header("Stats")]
-    public int playerHealth = 10;
-    public const int maxMana = 40;
-    public int playerMana = maxMana;
-
-    public void DamagePlayer(int damage)
-    {
-        playerHealth -= damage;
-        RefreshHealthBar();
-    }
-
-    void RefreshHealthBar()
-    {
-        int auxH = 0;
-        foreach (Transform child in healthBar)
-        {
-            child.GetComponent<Image>().fillAmount = 0;
-            if (auxH < playerHealth)
-            {
-                child.GetComponent<Image>().fillAmount += 0.5f;
-                auxH++;
-            }
-            if (auxH < playerHealth)
-            {
-                child.GetComponent<Image>().fillAmount += 0.5f;
-                auxH++;
-            }
-        }
-    }
-
-    public void ConsumeMana(int mana)
-    {
-        playerMana -= mana;
-        Debug.Log(playerMana / maxMana);
-        manaBar.GetComponent<Image>().fillAmount = playerMana / maxMana;
-    }
-
-    [Header("Debug")]
+    [Header("Skills")]
     public string sendSkill;
-    public float skillOffset = 0.8f;
+    private float spellOffset = 0.8f;
+    private SpelRuntime sr;
 
     private Rigidbody2D rb;
     private bool isKeyPressed = false;
-
-    void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        sr = GetComponent<SpelRuntime>();
-
-#if UNITY_EDITOR
-        var skill = new {
-            block = new {
-                items = new[] {
-                    new {
-                        which = "statement",
-                        statement = new {
-                            expr= new {
-                                name= "playerMana",
-                                type= "NamedExpression"
-                            },
-                            stmts= new[] {
-                                new {
-                                    expr=new {
-                                        name= "fire",
-                                        type= "NamedExpression"
-                                    },
-                                    type= "Call"
-                                }
-                            },
-                            type = "WhileStatement"
-                        },
-                        type = "BlockItem"
-                    }
-                },
-                type = "Block"
-            },
-            type = "Document"
-        };
-        sendSkill = JsonConvert.SerializeObject(skill);
-#endif
-    }
-
-    void Update()
-    {
-        HandleMovement();
-        HandleActions();
-    }
 
     /* Actions */
 
@@ -113,9 +30,7 @@ public class PlayerController : MonoBehaviour
     {
         if ((Input.GetAxisRaw("Vertical") > 0.5 || Input.GetAxisRaw("Vertical") < -0.5) || (Input.GetAxisRaw("Horizontal") > 0.5 || Input.GetAxisRaw("Horizontal") < -0.5))
         {
-            //lastMove.y = Input.GetAxisRaw("Vertical");
-            //lastMove.x = Input.GetAxisRaw("Horizontal");
-            rb.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * MoveSpeed, Input.GetAxisRaw("Vertical") * MoveSpeed);
+            rb.velocity = new Vector2(Input.GetAxisRaw("Horizontal") * stats.GetSpeed(), Input.GetAxisRaw("Vertical") * stats.GetSpeed());
         }
 
         if (Input.GetAxisRaw("Vertical") < 0.5 && Input.GetAxisRaw("Vertical") > -0.5)
@@ -150,13 +65,38 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void CastSpell(ICastSpell spell)
+    /* Stats */
+
+    void RefreshHealthBar()
     {
-        if (spell.isPlayerWorthy(this))
+        int auxH = 0;
+        float playerHealth = stats.GetHP();
+        foreach (Transform child in healthBar)
         {
-            spell.cast();
-            spell.applyConsequences(this);
+            child.GetComponent<Image>().fillAmount = 0;
+            if (auxH < playerHealth)
+            {
+                child.GetComponent<Image>().fillAmount += 0.5f;
+                auxH++;
+            }
+            if (auxH < playerHealth)
+            {
+                child.GetComponent<Image>().fillAmount += 0.5f;
+                auxH++;
+            }
         }
+    }
+
+    public void RefreshMPBar()
+    {
+        manaBar.GetComponent<Image>().fillAmount = stats.GetMP() / stats.maxMP;
+    }
+
+    /* Spells */
+
+    public void Cast(ICastSpell spell)
+    {
+        spell.cast(UtilsClass.GetMousePosition2D(), spellOffset);
     }
 
     /* Collision */
@@ -187,6 +127,76 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void SendUpdateInventory()
+    {
+        DataUpdate data;
+        data.inventory = inventory;
+
+        var write = JsonConvert.SerializeObject(data).ToCharArray();
+        var position = new NativeArray<char>(write.Length, Allocator.Persistent);
+        position.CopyFrom(write);
+
+        var job = new UpdateJob()
+        {
+            inventory = position
+        };
+        var handle = job.Schedule();
+
+        handle.Complete();
+    }
+
+    /* Generic functions */
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpelRuntime>();
+        stats = GetComponent<StatsController>();
+
+#if UNITY_EDITOR
+        var skill = new
+        {
+            block = new
+            {
+                items = new[] {
+                    new {
+                        which = "statement",
+                        statement = new {
+                            expr= new {
+                                name= "playerMana",
+                                type= "NamedExpression"
+                            },
+                            stmts= new[] {
+                                new {
+                                    expr=new {
+                                        name= "fire",
+                                        type= "NamedExpression"
+                                    },
+                                    type= "Call"
+                                }
+                            },
+                            type = "WhileStatement"
+                        },
+                        type = "BlockItem"
+                    }
+                },
+                type = "Block"
+            },
+            type = "Document"
+        };
+        sendSkill = JsonConvert.SerializeObject(skill);
+#endif
+
+        stats.hpChanged.AddListener(RefreshHealthBar);
+        stats.mpChanged.AddListener(RefreshMPBar);
+    }
+
+    void Update()
+    {
+        HandleMovement();
+        HandleActions();
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.name.StartsWith("Block"))
@@ -196,21 +206,9 @@ public class PlayerController : MonoBehaviour
             {
                 inventory.Add(item.id);
 
-                DataUpdate data;
-                data.inventory = inventory;
-
-                var write = JsonConvert.SerializeObject(data).ToCharArray();
-                var position = new NativeArray<char>(write.Length, Allocator.Persistent);
-                position.CopyFrom(write);
-
-                var job = new UpdateJob()
-                {
-                    inventory = position
-                };
-                var handle = job.Schedule();
+                SendUpdateInventory();
 
                 Destroy(collision.gameObject);
-                handle.Complete();
             }
         }
     }
@@ -220,10 +218,10 @@ public class PlayerController : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void RequestAction();
 
-    private SpelRuntime sr;
-
     [DllImport("__Internal")]
     private static extern void UpdateInventory(string str);
+
+    /* UI stuff */
 
     [Header("UI")]
     public Transform healthBar;

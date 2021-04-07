@@ -3,8 +3,8 @@ using UnityEngine;
 using Newtonsoft.Json.Linq;
 using Spells;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Collections;
+using Utils;
 
 public class SpelRuntime : MonoBehaviour
 {
@@ -127,17 +127,20 @@ public class SpelRuntime : MonoBehaviour
         validate(obj, "expr");
         validate(obj, "stmts");
 
-        var expr = VisitNamedExpression((JObject)obj["expr"]);
-        if (!(expr is int || expr is bool))
-        {
-            unimplemented();
-        }
-
         while (true)
         {
-            if ((expr is int && (int)expr == 0) ||
+            var expr = VisitNamedExpression((JObject)obj["expr"]);
+            if (!(expr is int || expr is float || expr is bool))
+            {
+                unimplemented();
+            }
+
+            Debug.Log((float)expr);
+
+            if ((expr is float && (float)expr == 0f) ||
                 (expr is bool && !(bool)expr))
             {
+                Debug.Log("stopped");
                 break;
             }
 
@@ -170,7 +173,7 @@ public class SpelRuntime : MonoBehaviour
         }
 
         // Player casts
-        pc.CastSpell(spell);
+        CallSkill(spell);
     }
 
     private object VisitNamedExpression(JObject obj)
@@ -191,14 +194,14 @@ public class SpelRuntime : MonoBehaviour
     private object VisitModification(JObject obj)
     {
         var callable = (JObject)obj["expr"];
-        ICastElement spell;
+        ICastSpell spell;
         if ((string)callable["type"] == "NamedExpression")
         {
-            spell = (ICastElement)VisitNamedExpression(callable);
+            spell = (ICastSpell)VisitNamedExpression(callable);
         }
         else if ((string)callable["type"] == "Modification")
         {
-            spell = (ICastElement)VisitModification(callable);
+            spell = (ICastSpell)VisitModification(callable);
         }
         else
         {
@@ -238,41 +241,52 @@ public class SpelRuntime : MonoBehaviour
         {
             throw new Exception("skill not found");
         }
-        return new CastElement(inst, pc.transform.position, pc.skillOffset);
+        return new CastElement(pc.transform, inst);
     }
 
-    private CastElementDecorator CreateSkillModified(JObject obj, ICastElement spell)
+    private CastElementDecorator CreateSkillModified(JObject obj, ICastSpell spell)
     {
         var skillName = (string)obj["name"];
-        if (skillName == "growth")
+        if (spell is CastElement)
         {
-            return new CastElementLarger(spell);
+            var casted = (CastElement)spell;
+            if (skillName == "growth")
+            {
+                return new CastElementLarger(casted);
+            }
+            else if (skillName == "speed")
+            {
+                return new CastElementFaster(casted);
+            }
         }
-        else if (skillName == "speed")
-        {
-            return new CastElementFaster(spell);
-        }
-        else
-        {
-            throw new Exception("skill modifier not found");
-        }
+        throw new Exception("skill modifier not found");
     }
 
     private object GetVirtualValue(string name)
     {
         if (name == "playerMana")
         {
-            return pc.playerMana;
+            return pc.GetComponent<StatsController>().GetMP();
         }
         if (name == "playerHealth")
         {
-            return pc.playerHealth;
+            return pc.GetComponent<StatsController>().GetHP();
         }
         unimplemented();
         return null;
     }
 
     /* Skills */
+
+    private void CallSkill(ICastSpell spell)
+    {
+        var stats = pc.GetComponent<StatsController>();
+        if (spell.isWorthy(stats))
+        {
+            pc.Cast(spell);
+            spell.applyConsequences(stats);
+        }
+    }
 
     [Header("Skill prefabs")]
 

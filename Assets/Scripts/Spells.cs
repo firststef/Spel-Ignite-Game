@@ -5,114 +5,96 @@ namespace Spells
 {
     public interface ICastSpell
     {
-        public bool isPlayerWorthy(PlayerController pc);
-        public void cast();
-        public void applyConsequences(PlayerController pc);
+        public bool isWorthy(StatsController stats);
+        public void cast(Vector3 shootTo, float skillOffset);
+        public void applyConsequences(StatsController stats);
     }
 
-    public interface ICastElement: ICastSpell
+    public class CastElement : ICastSpell
     {
-        // to fill with other required functions for elemental skills
-    }
-
-    // todo remove all states from this and the classes should be functional => start from a filled struct or pass it etc
-    public class CastElement: ICastElement
-    {
+        public Transform caster;
         public Transform prefab;
-        public Vector3 endPointPosition;
-        public float skillOffset;
         public float moveSpeed = 3f;
         public int manaCost = 1;
         public Vector3 scale;
 
-        public CastElement(Transform prefab, Vector3 endPointPosition, float skillOffset)
+        public CastElement() {}
+
+        public CastElement(Transform caster, Transform prefab)
         {
+            this.caster = caster;
             this.prefab = prefab;
-            this.endPointPosition = endPointPosition;
-            this.skillOffset = skillOffset;
             scale = prefab.localScale;
         }
 
-        public bool isPlayerWorthy(PlayerController pc)
+        public bool isWorthy(StatsController stats)
         {
-            return pc.playerMana >= manaCost;
+            return stats.GetMP() >= manaCost;
         }
 
-        public void cast()
+        public void cast(Vector3 shootTo, float skillOffset)
         {
-            var shootPosition = UtilsClass.GetMousePosition2D();
+            var startPosition = caster.position;
 
-            var direction = (shootPosition - endPointPosition).normalized;
+            var direction = (shootTo - startPosition).normalized;
             var len = UtilsClass.HypotenuseLength(direction.x, direction.y);
             var factor = 1.0f / (len == 0 ? Mathf.Epsilon : len);
             direction = new Vector3(direction.x * factor, direction.y * factor, direction.z);
 
-            var newRoot = new Vector3(endPointPosition.x + direction.x * skillOffset, endPointPosition.y + direction.y * skillOffset, endPointPosition.z);
+            var newRoot = new Vector3(startPosition.x + direction.x * skillOffset, startPosition.y + direction.y * skillOffset, startPosition.z);
             var obj = Object.Instantiate(prefab, newRoot, Quaternion.identity);
             obj.localScale = scale;
-            obj.GetComponent<OrbSkill>().Setup(direction, moveSpeed);
+            obj.GetComponent<OrbSkill>().Setup(direction, moveSpeed, this);
         }
 
-        public void applyConsequences(PlayerController pc)
+        public void applyConsequences(StatsController stats)
         {
-            pc.ConsumeMana(manaCost);
+            stats.ConsumeMana(manaCost);
         }
     }
 
-    public class CastElementDecorator: ICastElement
+    public class CastElementDecorator: ICastSpell
     {
-        public ICastSpell castElement;
+        public CastElement castElement;
 
-        public CastElementDecorator(ICastElement cast)
+        public CastElementDecorator(CastElement cast)
         {
             castElement = cast;
         }
 
-        public bool isPlayerWorthy(PlayerController pc)
+        public bool isWorthy(StatsController stats)
         {
-            return castElement.isPlayerWorthy(pc);
+            return castElement.isWorthy(stats);
         }
 
-        public virtual void cast()
+        public void cast(Vector3 shootTo, float skillOffset)
         {
-            castElement.cast();
+            castElement.cast(shootTo, skillOffset);
         }
 
-        public void applyConsequences(PlayerController pc)
+        public void applyConsequences(StatsController stats)
         {
-            castElement.applyConsequences(pc);
-        }
-
-        protected CastElement searchForOriginal()
-        {
-            var ce = castElement;
-            while (!(ce is CastElement))
-            {
-                ce = ((CastElementDecorator)ce).castElement;
-            }
-            return (CastElement)ce;
+            castElement.applyConsequences(stats);
         }
     }
 
     public class CastElementLarger: CastElementDecorator
     {
-        public CastElementLarger(ICastElement cast)
+        public CastElementLarger(CastElement cast)
             :base(cast)
         {
-            var ce = searchForOriginal();
-            ce.scale *= 2;
-            ce.manaCost *= 1;
+            castElement.scale *= 2;
+            castElement.manaCost *= 1;
         }
     }
 
     public class CastElementFaster : CastElementDecorator
     {
-        public CastElementFaster(ICastElement cast)
+        public CastElementFaster(CastElement cast)
             : base(cast)
         {
-            var ce = searchForOriginal();
-            ce.moveSpeed *= 2;
-            ce.manaCost *= 1;
+            castElement.moveSpeed *= 2;
+            castElement.manaCost *= 1;
         }
     }
 }

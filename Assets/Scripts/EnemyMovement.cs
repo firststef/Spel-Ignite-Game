@@ -9,6 +9,7 @@ public class EnemyMovement : MonoBehaviour
 
     private Animator animator;
     private SpriteRenderer rd;
+    private StatsController st;
 
     void Start()
     {
@@ -19,12 +20,14 @@ public class EnemyMovement : MonoBehaviour
         var realObject = transform.GetChild(0).gameObject;
         animator = realObject.GetComponent<Animator>();
         rd = realObject.GetComponent<SpriteRenderer>();
+        st = realObject.GetComponent<StatsController>();
     }
 
     void Update()
     {
         transform.position = new Vector3(transform.position.x, transform.position.y, -1);
         ag.SetDestination(new Vector3(target.position.x, target.position.y, -1));
+        ag.speed = st.GetSpeed();
 
         animator.SetBool("Moving", ag.velocity.x != 0 || ag.velocity.y != 0);
         rd.flipX = ag.velocity.x == 0 ? rd.flipX : ag.velocity.x < 0;

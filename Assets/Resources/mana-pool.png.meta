@@ -14,6 +14,9 @@ TextureImporter:
   - first:
       213: 7869878627458498668
     second: mana-pool_3
+  - first:
+      213: -5434340265144988730
+    second: mana-pool_4
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -194,6 +197,27 @@ TextureImporter:
       bones: []
       spriteID: c604a1f4aec673d60800000000000000
       internalID: 7869878627458498668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mana-pool_4
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 16
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6cb4e6b32585594b0800000000000000
+      internalID: -5434340265144988730
       vertices: []
       indices: 
       edges: []

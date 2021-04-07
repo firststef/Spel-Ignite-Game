@@ -1,10 +1,12 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(StatsController))]
 public class EnemyBehaviour : MonoBehaviour
 {
     public PlayerController player;
     private Animator animator;
+    private StatsController stats;
 
     private System.DateTime lastAttack;
 
@@ -12,6 +14,9 @@ public class EnemyBehaviour : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         lastAttack = System.DateTime.Now;
+        stats = GetComponent<StatsController>();
+
+        stats.onDeath.AddListener(Die);
     }
 
     private void Update()
@@ -20,16 +25,13 @@ public class EnemyBehaviour : MonoBehaviour
         animator.SetBool("Attacking", isClose);
         if (isClose && (System.DateTime.Now - lastAttack).TotalSeconds > 1)
         {
-            player.DamagePlayer(1);
+            player.GetComponent<StatsController>().Damage(1);
             lastAttack = System.DateTime.Now;
         }
     }
 
-    public void TakeDamage(string spell, int amount=0)
+    private void Die()
     {
-        if (spell.StartsWith("Fire"))
-        {
-            Destroy(transform.parent.gameObject);
-        }
+        Destroy(transform.parent.gameObject);
     }
 }

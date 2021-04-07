@@ -15,6 +15,7 @@ using Utils;
 public class PlayerController : MonoBehaviour
 {
     private StatsController stats;
+    private Animator anim;
 
     [Header("Skills")]
     public string sendSkill;
@@ -23,6 +24,8 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private bool isKeyPressed = false;
+
+    public bool isCasting = false;
 
     /* Actions */
 
@@ -152,6 +155,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpelRuntime>();
         stats = GetComponent<StatsController>();
+        anim = GetComponent<Animator>();
 
 #if UNITY_EDITOR
         var skill = new

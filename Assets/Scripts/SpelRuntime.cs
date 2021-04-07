@@ -9,10 +9,12 @@ using Utils;
 public class SpelRuntime : MonoBehaviour
 {
     private PlayerController pc;
+    private Animator anim;
 
     private void Awake()
     {
         pc = GetComponent<PlayerController>();
+        anim = GetComponent<Animator>();
 
 #if !UNITY_EDITOR && UNITY_WEBGL
         WebGLInput.captureAllKeyboardInput = false;
@@ -70,7 +72,9 @@ public class SpelRuntime : MonoBehaviour
     private IEnumerator VisitDocumentAsync(JObject obj)
     {
         validate(obj, "type", "Document");
-        StartCoroutine(VisitBlockAsync((JObject)obj["block"]));
+        anim.SetBool("Attacking", true);
+        yield return VisitBlockAsync((JObject)obj["block"]);
+        anim.SetBool("Attacking", false);
         yield break;
     }
 
@@ -79,7 +83,7 @@ public class SpelRuntime : MonoBehaviour
         validate(obj, "type", "Block");
         foreach (var blockItem in (JArray)obj["items"])
         {
-            StartCoroutine(VisitBlockItemAsync((JObject)blockItem));
+            yield return VisitBlockItemAsync((JObject)blockItem);
         }
         yield break;
     }
@@ -91,7 +95,7 @@ public class SpelRuntime : MonoBehaviour
         if ((string)obj["which"] == "statement")
         {
             validate(obj, "statement");
-            StartCoroutine(VisitStatementAsync((JObject)obj["statement"]));
+            yield return VisitStatementAsync((JObject)obj["statement"]);
             yield break;
         }
         if ((string)obj["which"] == "declaration")
@@ -112,7 +116,7 @@ public class SpelRuntime : MonoBehaviour
         }
         if ((string)obj["type"] == "WhileStatement")
         {
-            StartCoroutine(VisitWhileStatementAsync(obj));
+            yield return VisitWhileStatementAsync(obj);
             yield break;
         }
         if ((string)obj["type"] == "NoneStatement")
@@ -146,7 +150,7 @@ public class SpelRuntime : MonoBehaviour
 
             foreach (var stmt in (JArray)obj["stmts"])
             {
-                yield return StartCoroutine(VisitStatementAsync((JObject)stmt));
+                yield return VisitStatementAsync((JObject)stmt);
                 yield return new WaitForSeconds(1f);
             }
         }

@@ -5,32 +5,42 @@ using Spells;
 using System.Linq;
 using System.Collections;
 using Utils;
+using System.Collections.Generic;
 
 public class SpelRuntime : MonoBehaviour
 {
     private PlayerController pc;
-    private Animator anim;
+    public bool vmIsRunning = false;
+    public bool cancelling = false;
 
     private void Awake()
     {
         pc = GetComponent<PlayerController>();
-        anim = GetComponent<Animator>();
+        pc.endSpell.AddListener(OnCancel);
 
 #if !UNITY_EDITOR && UNITY_WEBGL
         WebGLInput.captureAllKeyboardInput = false;
 #endif
     }
 
-    public void TriggerAction(string skillJson)
+    public void Execute(string skillJson)
     {
         var json = JObject.Parse(skillJson);
         try
         {
-            StartCoroutine("VisitDocumentAsync", json);
+            StartCoroutine(VisitDocumentAsync(json));
         }
         catch (SpelVMError e)
         {
             Debug.LogError(e);
+        }
+    }
+
+    void OnCancel()
+    {
+        if (vmIsRunning)
+        {
+            cancelling = true;
         }
     }
 
@@ -71,10 +81,12 @@ public class SpelRuntime : MonoBehaviour
 
     private IEnumerator VisitDocumentAsync(JObject obj)
     {
+        vmIsRunning = true;
         validate(obj, "type", "Document");
-        anim.SetBool("Attacking", true);
+        cancelling = false;
         yield return VisitBlockAsync((JObject)obj["block"]);
-        anim.SetBool("Attacking", false);
+        cancelling = false;
+        vmIsRunning = false;
         yield break;
     }
 
@@ -111,7 +123,7 @@ public class SpelRuntime : MonoBehaviour
         validate(obj, "type");
         if ((string)obj["type"] == "Call")
         {
-            VisitCall(obj);
+            yield return VisitCall(obj);
             yield break;
         }
         if ((string)obj["type"] == "WhileStatement")
@@ -141,8 +153,10 @@ public class SpelRuntime : MonoBehaviour
 
             Debug.Log((float)expr);
 
-            if ((expr is float && (float)expr == 0f) ||
-                (expr is bool && !(bool)expr))
+            if ( (expr is float && (float)expr == 0f) ||
+                 (expr is bool && !(bool)expr) ||
+                 cancelling
+                )
             {
                 Debug.Log("stopped");
                 break;
@@ -156,7 +170,7 @@ public class SpelRuntime : MonoBehaviour
         }
     }
 
-    private void VisitCall(JObject obj)
+    private IEnumerator VisitCall(JObject obj)
     {
         validate(obj, "type", "Call");
         
@@ -177,13 +191,13 @@ public class SpelRuntime : MonoBehaviour
         }
 
         // Player casts
-        CallSkill(spell);
+        yield return CallSkill(spell);
     }
 
     private object VisitNamedExpression(JObject obj)
     {
         var name = (string)obj["name"];
-        if ((new[] { "fire", "water", "earth" }).Any(name.Contains))
+        if ((new[] { "fire", "water", "earth", "orb" }).Any(name.Contains))
         {
             return CreateSkill(obj);
         }
@@ -225,42 +239,60 @@ public class SpelRuntime : MonoBehaviour
         }
     }
 
-    private CastElement CreateSkill(JObject obj)
+    private Cast CreateSkill(JObject obj)
     {
-        Transform inst = null;
         var skillName = (string)obj["name"];
         if (skillName == "water")
         {
-            inst = pfWater;
+            return new CastElement(skillName, pc, pfWater);
         }
         else if (skillName == "fire")
         {
-            inst = pfFire;
+            return new CastElement(skillName, pc, pfFire);
         }
         else if (skillName == "earth")
         {
-            inst = pfEarth;
+            return new CastElement(skillName, pc, pfEarth);
         }
         else
         {
             throw new Exception("skill not found");
         }
-        return new CastElement(pc.transform, inst);
     }
 
-    private CastElementDecorator CreateSkillModified(JObject obj, ICastSpell spell)
+    private CastOrb CreateOrbSkill(CastElement spell)
+    {
+        if (spell.name == "fire")
+        {
+            return new CastOrb("flames", pc, pfOrbFire);
+        }
+        if (spell.name == "water")
+        {
+            return new CastOrb("splash", pc, pfOrbWater);
+        }
+        throw new Exception("skill not found");
+    }
+
+    private ICastSpell CreateSkillModified(JObject obj, ICastSpell spell)
     {
         var skillName = (string)obj["name"];
         if (spell is CastElement)
         {
-            var casted = (CastElement)spell;
+            if (skillName == "orb")
+            {
+                return CreateOrbSkill((CastElement)spell);
+            }
+        }
+        if (spell is CastOrb)
+        {
+            var casted = (CastOrb)spell;
             if (skillName == "growth")
             {
-                return new CastElementLarger(casted);
+                return new CastOrbLarger(casted);
             }
             else if (skillName == "speed")
             {
-                return new CastElementFaster(casted);
+                return new CastOrbFaster(casted);
             }
         }
         throw new Exception("skill modifier not found");
@@ -282,14 +314,17 @@ public class SpelRuntime : MonoBehaviour
 
     /* Skills */
 
-    private void CallSkill(ICastSpell spell)
+    private IEnumerator CallSkill(ICastSpell spell)
     {
         var stats = pc.GetComponent<StatsController>();
         if (spell.isWorthy(stats))
         {
-            pc.Cast(spell);
+            pc.castCounter++;
+            yield return new WaitForSeconds(0.5f);
+            spell.cast();
             spell.applyConsequences(stats);
         }
+        yield break;
     }
 
     [Header("Skill prefabs")]
@@ -297,4 +332,8 @@ public class SpelRuntime : MonoBehaviour
     public Transform pfWater;
     public Transform pfFire;
     public Transform pfEarth;
+
+    public Transform pfOrbWater;
+    public Transform pfOrbFire;
+    public Transform pfOrbEarth;
 }

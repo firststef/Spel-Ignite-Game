@@ -13,7 +13,7 @@ public class OrbSkill : MonoBehaviour
         this.direction = direction;
         this.moveSpeed = moveSpeed;
         this.spell = spell;
-        transform.eulerAngles = new Vector3(0, 0, UtilsClass.GetAngleFromVectorFloat(direction)); ;
+        transform.eulerAngles = new Vector3(0, 0, UtilsClass.GetAngleFromVectorFloat(direction));
         Destroy(gameObject, 5f);
     }
 

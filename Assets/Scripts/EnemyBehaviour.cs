@@ -21,7 +21,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Update()
     {
-        bool isClose = Vector3.Distance(transform.position, player.transform.position) < 2f;
+        bool isClose = Vector3.Distance(transform.position, player.transform.position) < 1f;
         animator.SetBool("Attacking", isClose);
         if (isClose && (System.DateTime.Now - lastAttack).TotalSeconds > 1)
         {

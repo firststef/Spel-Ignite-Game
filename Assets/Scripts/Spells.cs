@@ -6,45 +6,23 @@ namespace Spells
     public interface ICastSpell
     {
         public bool isWorthy(StatsController stats);
-        public void cast(Vector3 shootTo, float skillOffset);
+        public void cast();
         public void applyConsequences(StatsController stats);
     }
 
-    public class CastElement : ICastSpell
+    public class Cast
     {
-        public Transform caster;
-        public Transform prefab;
-        public float moveSpeed = 3f;
+        public string name;
         public int manaCost = 1;
-        public Vector3 scale;
 
-        public CastElement() {}
-
-        public CastElement(Transform caster, Transform prefab)
+        public Cast(string name)
         {
-            this.caster = caster;
-            this.prefab = prefab;
-            scale = prefab.localScale;
+            this.name = name;
         }
 
         public bool isWorthy(StatsController stats)
         {
             return stats.GetMP() >= manaCost;
-        }
-
-        public void cast(Vector3 shootTo, float skillOffset)
-        {
-            var startPosition = caster.position;
-
-            var direction = (shootTo - startPosition).normalized;
-            var len = UtilsClass.HypotenuseLength(direction.x, direction.y);
-            var factor = 1.0f / (len == 0 ? Mathf.Epsilon : len);
-            direction = new Vector3(direction.x * factor, direction.y * factor, direction.z);
-
-            var newRoot = new Vector3(startPosition.x + direction.x * skillOffset, startPosition.y + direction.y * skillOffset, startPosition.z);
-            var obj = Object.Instantiate(prefab, newRoot, Quaternion.identity);
-            obj.localScale = scale;
-            obj.GetComponent<OrbSkill>().Setup(direction, moveSpeed, this);
         }
 
         public void applyConsequences(StatsController stats)
@@ -53,48 +31,112 @@ namespace Spells
         }
     }
 
-    public class CastElementDecorator: ICastSpell
+    public class CastOrb : Cast, ICastSpell
     {
-        public CastElement castElement;
 
-        public CastElementDecorator(CastElement cast)
+        public PlayerController caster;
+        public Transform prefab;
+
+        public float moveSpeed = 3f;
+        public Vector3 scale;
+
+        public CastOrb(string name)
+            : base(name)
+        { 
+        }
+
+        public CastOrb(string name, PlayerController caster, Transform prefab)
+            :base(name)
         {
-            castElement = cast;
+            this.caster = caster;
+            this.prefab = prefab;
+            scale = prefab.localScale;
+        }
+
+        public void cast()
+        {
+            var startPosition = caster.transform.position;
+
+            var direction = (UtilsClass.GetMousePosition2D() - startPosition).normalized;
+            var len = UtilsClass.HypotenuseLength(direction.x, direction.y);
+            var factor = 1.0f / (len == 0 ? Mathf.Epsilon : len);
+            direction = new Vector3(direction.x * factor, direction.y * factor, direction.z);
+
+            var newRoot = new Vector3(startPosition.x + direction.x * caster.spellOffset, startPosition.y + direction.y * caster.spellOffset, startPosition.z);
+            var obj = Object.Instantiate(prefab, newRoot, Quaternion.identity);
+            obj.localScale = scale;
+            obj.GetComponent<OrbSkill>().Setup(direction, moveSpeed, this);
+
+            caster.castCounter--;
+        }
+    }
+
+    public class CastOrbDecorator : ICastSpell
+    {
+        public CastOrb castOrb;
+
+        public CastOrbDecorator(CastOrb cast)
+        {
+            castOrb = cast;
         }
 
         public bool isWorthy(StatsController stats)
         {
-            return castElement.isWorthy(stats);
+            return castOrb.isWorthy(stats);
         }
 
-        public void cast(Vector3 shootTo, float skillOffset)
+        public void cast()
         {
-            castElement.cast(shootTo, skillOffset);
+            castOrb.cast();
         }
 
         public void applyConsequences(StatsController stats)
         {
-            castElement.applyConsequences(stats);
+            castOrb.applyConsequences(stats);
         }
     }
 
-    public class CastElementLarger: CastElementDecorator
+    public class CastOrbLarger : CastOrbDecorator
     {
-        public CastElementLarger(CastElement cast)
-            :base(cast)
-        {
-            castElement.scale *= 2;
-            castElement.manaCost *= 1;
-        }
-    }
-
-    public class CastElementFaster : CastElementDecorator
-    {
-        public CastElementFaster(CastElement cast)
+        public CastOrbLarger(CastOrb cast)
             : base(cast)
         {
-            castElement.moveSpeed *= 2;
-            castElement.manaCost *= 1;
+            castOrb.scale *= 2;
+            castOrb.manaCost *= 1;
+        }
+    }
+
+    public class CastOrbFaster : CastOrbDecorator
+    {
+        public CastOrbFaster(CastOrb cast)
+            : base(cast)
+        {
+            castOrb.moveSpeed *= 2;
+            castOrb.manaCost *= 1;
+        }
+    }
+
+    public class CastElement : Cast, ICastSpell
+    {
+        private Transform prefab;
+        private PlayerController pc;
+
+        public CastElement(string name) 
+            :base(name)
+        {
+        }
+
+        public CastElement(string name, PlayerController pc, Transform prefab)
+            :this(name)
+        {
+            this.prefab = prefab;
+            this.pc = pc;
+        }
+
+        public void cast()
+        {
+            var obj = Object.Instantiate(prefab, pc.transform);
+            obj.GetComponent<ElementSkill>().Setup(pc, this);
         }
     }
 }

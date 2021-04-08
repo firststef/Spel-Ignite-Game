@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Spells;
 using UnityEngine.UI;
 using Utils;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpelRuntime))]
@@ -19,13 +20,14 @@ public class PlayerController : MonoBehaviour
 
     [Header("Skills")]
     public string sendSkill;
-    private float spellOffset = 0.8f;
+    public float spellOffset = 0.8f;
     private SpelRuntime sr;
 
     private Rigidbody2D rb;
     private bool isKeyPressed = false;
 
-    public bool isCasting = false;
+    public int castCounter = 0;
+    public UnityEvent endSpell = new UnityEvent();
 
     /* Actions */
 
@@ -55,17 +57,29 @@ public class PlayerController : MonoBehaviour
             {
                 isKeyPressed = true;
 
+                if (castCounter == 0 && !sr.cancelling)
+                {
 #if !UNITY_EDITOR && UNITY_WEBGL
-                RequestAction();
+                    RequestAction();
 #else
-                sr.TriggerAction(sendSkill);
+                    TriggerAction(sendSkill);
 #endif
+                }
+                else
+                {
+                    endSpell.Invoke();
+                }
             }
         }
         else if (isKeyPressed)
         {
             isKeyPressed = false;
         }
+    }
+
+    public void TriggerAction(string skillJson)
+    {
+        sr.Execute(skillJson);
     }
 
     /* Stats */
@@ -93,13 +107,6 @@ public class PlayerController : MonoBehaviour
     public void RefreshMPBar()
     {
         manaBar.GetComponent<Image>().fillAmount = stats.GetMP() / stats.maxMP;
-    }
-
-    /* Spells */
-
-    public void Cast(ICastSpell spell)
-    {
-        spell.cast(UtilsClass.GetMousePosition2D(), spellOffset);
     }
 
     /* Collision */
@@ -158,7 +165,8 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
 
 #if UNITY_EDITOR
-        var skill = new
+        #region whileSkill
+        var whileSkill = new
         {
             block = new
             {
@@ -172,9 +180,16 @@ public class PlayerController : MonoBehaviour
                             },
                             stmts= new[] {
                                 new {
-                                    expr=new {
-                                        name= "fire",
-                                        type= "NamedExpression"
+                                    expr= new {
+                                        expr= new {
+                                            name= "fire",
+                                            type= "NamedExpression"
+                                        },
+                                        value= new {
+                                            name= "orb",
+                                            type= "NamedExpression"
+                                        },
+                                        type= "Modification"
                                     },
                                     type= "Call"
                                 }
@@ -188,7 +203,84 @@ public class PlayerController : MonoBehaviour
             },
             type = "Document"
         };
-        sendSkill = JsonConvert.SerializeObject(skill);
+        #endregion
+
+        #region fire
+        var fire = new {
+            block= new {
+                items= new[] {
+                        new {
+                            which= "statement",
+                            statement= new {
+                                expr= new {
+                                    name= "fire",
+                                    type= "NamedExpression"
+                                },
+                                type= "Call"
+                            },
+                            type= "BlockItem"
+                        }
+                },
+                type= "Block"
+            },
+            type= "Document"
+        };
+        #endregion
+
+        #region water
+        var water = new
+        {
+            block = new
+            {
+                items = new[] {
+                        new {
+                            which= "statement",
+                            statement= new {
+                                expr= new {
+                                    name= "water",
+                                    type= "NamedExpression"
+                                },
+                                type= "Call"
+                            },
+                            type= "BlockItem"
+                        }
+                },
+                type = "Block"
+            },
+            type = "Document"
+        };
+        #endregion
+
+        #region fireOrb
+        var fireOrb = new {
+            block = new {
+                items = new[] {
+                            new {
+                            which= "statement",
+                            statement= new  {
+                                expr= new {
+                                    expr= new {
+                                        name= "fire",
+                                        type= "NamedExpression"
+                                    },
+                                    value= new {
+                                        name= "orb",
+                                        type= "NamedExpression"
+                                    },
+                                    type= "Modification"
+                                },
+                                type= "Call"
+                            },
+                            type= "BlockItem"
+                        }
+                },
+                type = "Block"
+            },
+            type = "Document"
+        };
+        #endregion
+
+        sendSkill = JsonConvert.SerializeObject(whileSkill);
 #endif
 
         stats.hpChanged.AddListener(RefreshHealthBar);
@@ -199,6 +291,8 @@ public class PlayerController : MonoBehaviour
     {
         HandleMovement();
         HandleActions();
+
+        anim.SetBool("Attacking", sr.vmIsRunning || castCounter != 0);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

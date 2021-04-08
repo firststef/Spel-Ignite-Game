@@ -1,4 +1,5 @@
 using Spells;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -24,6 +25,7 @@ public class StatsController : MonoBehaviour
     private float currentSpeed;
 
     private bool dead = false;
+    private bool isInvincible = false;
 
     public UnityEvent mpChanged = new UnityEvent();
     public UnityEvent hpChanged = new UnityEvent();
@@ -61,8 +63,15 @@ public class StatsController : MonoBehaviour
 
     public void Damage(float amount)
     {
+        if (isInvincible)
+        {
+            return;
+        }
+
         currentHP -= amount;
         hpChanged.Invoke();
+        StartCoroutine(Flash());
+
         if (!dead && currentHP <= 0)
         {
             onDeath.Invoke();
@@ -78,6 +87,27 @@ public class StatsController : MonoBehaviour
     public float GetHP()
     {
         return currentHP;
+    }
+
+    public IEnumerator Flash()
+    {
+        isInvincible = true;
+        float totalTime = 0;
+        while (totalTime < 100f)
+        {
+            if ((int)(totalTime / 30f) % 2 == 0)
+            {
+                GetComponent<Renderer>().material.SetFloat("_FlashAmount", 0.8f);
+            }
+            else
+            {
+                GetComponent<Renderer>().material.SetFloat("_FlashAmount", 0);
+            }
+
+            totalTime += 31f;
+            yield return new WaitForSeconds(0.31f);
+        }
+        isInvincible = false;
     }
 
     public void AddMana(float mana)

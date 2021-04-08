@@ -251,6 +251,30 @@ public class PlayerController : MonoBehaviour
         };
         #endregion
 
+        #region earth
+        var earth = new
+        {
+            block = new
+            {
+                items = new[] {
+                        new {
+                            which= "statement",
+                            statement= new {
+                                expr= new {
+                                    name= "earth",
+                                    type= "NamedExpression"
+                                },
+                                type= "Call"
+                            },
+                            type= "BlockItem"
+                        }
+                },
+                type = "Block"
+            },
+            type = "Document"
+        };
+        #endregion
+
         #region fireOrb
         var fireOrb = new {
             block = new {
@@ -280,7 +304,38 @@ public class PlayerController : MonoBehaviour
         };
         #endregion
 
-        sendSkill = JsonConvert.SerializeObject(whileSkill);
+        #region firespeed
+        var firespeed = new
+        {
+            block = new
+            {
+                items = new[] {
+                            new {
+                            which= "statement",
+                            statement= new  {
+                                expr= new {
+                                    expr= new {
+                                        name= "fire",
+                                        type= "NamedExpression"
+                                    },
+                                    value= new {
+                                        name= "speed",
+                                        type= "NamedExpression"
+                                    },
+                                    type= "Modification"
+                                },
+                                type= "Call"
+                            },
+                            type= "BlockItem"
+                        }
+                },
+                type = "Block"
+            },
+            type = "Document"
+        };
+        #endregion
+
+        sendSkill = JsonConvert.SerializeObject(firespeed);
 #endif
 
         stats.hpChanged.AddListener(RefreshHealthBar);

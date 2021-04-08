@@ -252,7 +252,7 @@ public class SpelRuntime : MonoBehaviour
         }
         else if (skillName == "earth")
         {
-            return new CastElement(skillName, pc, pfEarth);
+            return new CastOrb("rock", pc, pfOrbEarth);
         }
         else
         {
@@ -269,6 +269,10 @@ public class SpelRuntime : MonoBehaviour
         if (spell.name == "water")
         {
             return new CastOrb("splash", pc, pfOrbWater);
+        }
+        if (spell.name == "earth")
+        {
+            return new CastOrb("rock", pc, pfOrbEarth);
         }
         throw new Exception("skill not found");
     }
@@ -295,7 +299,8 @@ public class SpelRuntime : MonoBehaviour
                 return new CastOrbFaster(casted);
             }
         }
-        throw new Exception("skill modifier not found");
+        //throw new Exception("skill modifier not found");
+        return spell;
     }
 
     private object GetVirtualValue(string name)

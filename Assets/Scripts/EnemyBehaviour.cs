@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyBehaviour : MonoBehaviour
 {
     public PlayerController player;
+    public Transform goldPrefab;
     private Animator animator;
     private StatsController stats;
 
@@ -21,7 +22,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Update()
     {
-        bool isClose = Vector3.Distance(transform.position, player.transform.position) < 1f;
+        bool isClose = Vector3.Distance(transform.position, player.transform.position) < 1.5f;
         animator.SetBool("Attacking", isClose);
         if (isClose && (System.DateTime.Now - lastAttack).TotalSeconds > 1)
         {
@@ -32,6 +33,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Die()
     {
+        Instantiate(goldPrefab, transform.parent.position, Quaternion.identity);
         Destroy(transform.parent.gameObject);
     }
 }

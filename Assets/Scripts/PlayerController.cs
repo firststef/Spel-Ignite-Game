@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
     public int castCounter = 0;
     public UnityEvent endSpell = new UnityEvent();
 
+    private int gold = 0;
+
     /* Actions */
 
     private void HandleMovement()
@@ -51,6 +53,11 @@ public class PlayerController : MonoBehaviour
 
     private void HandleActions()
     {
+        anim.SetBool("Attacking", false);
+        if (Input.GetMouseButtonDown(0))
+        {
+            anim.SetBool("Attacking", true);
+        }
         if (Input.GetMouseButtonDown(1))
         {
             if (!isKeyPressed)
@@ -109,9 +116,15 @@ public class PlayerController : MonoBehaviour
         manaBar.GetComponent<Image>().fillAmount = stats.GetMP() / stats.maxMP;
     }
 
+    public void AddGold(int amount)
+    {
+        gold += amount;
+        goldText.text = gold.ToString();
+    }
+
     /* Collision */
 
-    public List<string> inventory = new List<string>();
+    public List<string> inventory = new List<string>(new[] { "cast" });
 
     [Serializable]
     struct DataUpdate
@@ -335,7 +348,7 @@ public class PlayerController : MonoBehaviour
         };
         #endregion
 
-        sendSkill = JsonConvert.SerializeObject(firespeed);
+        sendSkill = JsonConvert.SerializeObject(water);
 #endif
 
         stats.hpChanged.AddListener(RefreshHealthBar);
@@ -347,7 +360,7 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleActions();
 
-        anim.SetBool("Attacking", sr.vmIsRunning || castCounter != 0);
+        anim.SetBool("Casting", sr.vmIsRunning || castCounter != 0);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -379,4 +392,5 @@ public class PlayerController : MonoBehaviour
     [Header("UI")]
     public Transform healthBar;
     public Transform manaBar;
+    public Text goldText;
 }

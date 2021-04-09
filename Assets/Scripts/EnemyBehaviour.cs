@@ -26,7 +26,7 @@ public class EnemyBehaviour : MonoBehaviour
         animator.SetBool("Attacking", isClose);
         if (isClose && (System.DateTime.Now - lastAttack).TotalSeconds > 0.5f)
         {
-            player.GetComponent<StatsController>().Damage(0.5f);
+            player.GetComponent<StatsController>().Damage(0.8f);
             lastAttack = System.DateTime.Now;
         }
     }

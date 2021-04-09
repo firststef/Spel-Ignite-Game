@@ -5,10 +5,9 @@ using System.Collections.Generic;
 using Unity.Jobs;
 using Unity.Collections;
 using Newtonsoft.Json;
-using Spells;
 using UnityEngine.UI;
-using Utils;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpelRuntime))]
@@ -20,14 +19,19 @@ public class PlayerController : MonoBehaviour
 
     [Header("Skills")]
     public string sendSkill;
+    [HideInInspector]
     public float spellOffset = 0.8f;
     private SpelRuntime sr;
 
     private Rigidbody2D rb;
     private bool isKeyPressed = false;
 
+    [HideInInspector]
     public int castCounter = 0;
+    [HideInInspector]
     public UnityEvent endSpell = new UnityEvent();
+
+    public Transform enemies;
 
     private int gold = 0;
 
@@ -57,6 +61,15 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             anim.SetBool("Attacking", true);
+            foreach (Transform child in enemies)
+            {
+                bool isClose = Vector3.Distance(transform.position, child.position) < 2f;
+                var stats = child.GetChild(0).GetComponent<StatsController>();
+                if (isClose && stats)
+                {
+                    stats.Damage(0.3f);
+                }
+            }
         }
         if (Input.GetMouseButtonDown(1))
         {
@@ -120,6 +133,11 @@ public class PlayerController : MonoBehaviour
     {
         gold += amount;
         goldText.text = gold.ToString();
+    }
+
+    private void Die()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     /* Collision */
@@ -353,6 +371,7 @@ public class PlayerController : MonoBehaviour
 
         stats.hpChanged.AddListener(RefreshHealthBar);
         stats.mpChanged.AddListener(RefreshMPBar);
+        stats.onDeath.AddListener(Die);
     }
 
     void Update()

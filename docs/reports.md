@@ -107,3 +107,19 @@ Features:
 - experimenting with blockly
 - written a generator for spel in blockly
 - rewrote the spel grammar & parser
+
+### __Week 8__
+- added count restriction to inventory
+- worked on map
+- added health for enemies
+- refactoring
+- added cast animation
+- added damage shader
+- added support for the natural elements
+- added cancellation
+- added earth spell
+- added entities on map, firepuzzle
+- added damage for attack action
+- reload scene on death
+- tutorial png
+- finished working continuous delivery

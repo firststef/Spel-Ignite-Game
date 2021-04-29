@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using Utils;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpelRuntime))]
@@ -16,6 +17,7 @@ public class PlayerController : MonoBehaviour
 {
     private StatsController stats;
     private Animator anim;
+    private GenericMovement mov;
 
     [Header("Skills")]
     public string sendSkill;
@@ -25,6 +27,8 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private bool isKeyPressed = false;
+    private Vector3 lastMousePos;
+    private bool isCasting = false;
 
     [HideInInspector]
     public int castCounter = 0;
@@ -52,6 +56,21 @@ public class PlayerController : MonoBehaviour
         if (Input.GetAxisRaw("Horizontal") < 0.5 && Input.GetAxisRaw("Horizontal") > -0.5)
         {
             rb.velocity = new Vector2(0, rb.velocity.y);
+        }
+
+        // Rotation
+        var mousePos = UtilsClass.GetMousePosition2D();
+        if (isCasting && lastMousePos != mousePos)
+        {
+            var direction = (mousePos - transform.position).normalized;
+            var len = UtilsClass.HypotenuseLength(direction.x, direction.y);
+            var factor = 1.0f / (len == 0 ? Mathf.Epsilon : len);
+            direction = new Vector3(direction.x * factor, direction.y * factor, direction.z);
+
+            bool sign = direction.x == 0 ? transform.eulerAngles.y == 180 : direction.x < 0;
+            transform.rotation = Quaternion.Euler(new Vector3(transform.eulerAngles.x, sign ? 180 : 0, transform.eulerAngles.z));
+
+            lastMousePos = mousePos;
         }
     }
 
@@ -194,6 +213,7 @@ public class PlayerController : MonoBehaviour
         sr = GetComponent<SpelRuntime>();
         stats = GetComponent<StatsController>();
         anim = GetComponent<Animator>();
+        mov = GetComponent<GenericMovement>();
 
 #if UNITY_EDITOR
         #region whileSkill
@@ -376,10 +396,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        isCasting = sr.vmIsRunning || castCounter != 0;
+        anim.SetBool("Casting", isCasting);
+        mov.dontUpdate = isCasting;
+
         HandleMovement();
         HandleActions();
-
-        anim.SetBool("Casting", sr.vmIsRunning || castCounter != 0);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

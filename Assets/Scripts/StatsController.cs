@@ -6,7 +6,6 @@ using UnityEngine.Events;
 public class StatsController : MonoBehaviour
 {
     public float maxHP = 10f;
-    public bool createHPBar = true;
     private float currentHP;
 
     public float recoveryHP = 0f;
@@ -14,21 +13,23 @@ public class StatsController : MonoBehaviour
     private float elapsedHP = 0f;
 
     public float maxMP = 10f;
-    public bool createMPBar = false;
     private float currentMP;
 
     public float recoveryMP = 0.5f;
     public float recoverMPTime = 30f;
     private float elapsedMP = 0f;
 
-    public float maxSpeed = 5f;
+    public float maxSpeed = 1f;
     private float currentSpeed;
 
     private bool dead = false;
     private bool isInvincible = false;
 
+    [HideInInspector]
     public UnityEvent mpChanged = new UnityEvent();
+    [HideInInspector]
     public UnityEvent hpChanged = new UnityEvent();
+    [HideInInspector]
     public UnityEvent onDeath = new UnityEvent();
 
     private void Awake()
@@ -97,11 +98,11 @@ public class StatsController : MonoBehaviour
         {
             if ((int)(totalTime / 30f) % 2 == 0)
             {
-                GetComponent<Renderer>().material.SetFloat("_FlashAmount", 0.8f);
+                GetComponentInChildren<Renderer>().material.SetFloat("_FlashAmount", 0.8f);
             }
             else
             {
-                GetComponent<Renderer>().material.SetFloat("_FlashAmount", 0);
+                GetComponentInChildren<Renderer>().material.SetFloat("_FlashAmount", 0);
             }
 
             totalTime += 31f;

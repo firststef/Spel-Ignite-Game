@@ -24,6 +24,12 @@ public class OrbSkill : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        Debug.LogWarning(collision.gameObject.name);
+        if (collision.gameObject.tag != "Hitbox")
+        {
+            return;
+        }
+
         var stats = collision.gameObject.GetComponent<StatsController>();
         if (stats)
         {

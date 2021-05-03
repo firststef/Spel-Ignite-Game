@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(StatsController))]
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyMovement : MonoBehaviour
 {
@@ -17,10 +18,9 @@ public class EnemyMovement : MonoBehaviour
         ag.updateRotation = false;
         ag.updateUpAxis = false;
 
-        var realObject = transform.GetChild(0).gameObject;
-        animator = realObject.GetComponent<Animator>();
-        rd = realObject.GetComponent<SpriteRenderer>();
-        st = realObject.GetComponent<StatsController>();
+        animator = GetComponentInChildren<Animator>();
+        rd = GetComponentInChildren<SpriteRenderer>();
+        st = GetComponent<StatsController>();
     }
 
     void Update()

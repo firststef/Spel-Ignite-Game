@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(StatsController))]
 public class EnemyBehaviour : MonoBehaviour
 {
@@ -13,7 +12,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+        animator = transform.GetComponentInChildren<Animator>();
         lastAttack = System.DateTime.Now;
         stats = GetComponent<StatsController>();
 
@@ -33,7 +32,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Die()
     {
-        Instantiate(goldPrefab, transform.parent.position, Quaternion.identity);
-        Destroy(transform.parent.gameObject);
+        Instantiate(goldPrefab, transform.position, Quaternion.identity);
+        Destroy(gameObject);
     }
 }

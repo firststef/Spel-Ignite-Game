@@ -445,7 +445,7 @@ MonoBehaviour:
   maxMP: 10
   recoveryMP: 0.5
   recoverMPTime: 30
-  maxSpeed: 5
+  maxSpeed: 3
   mpChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -620,8 +620,8 @@ GameObject:
   - component: {fileID: 6496486151755998461}
   - component: {fileID: 795596380}
   m_Layer: 7
-  m_Name: Hitbox
-  m_TagString: Hitbox
+  m_Name: Hurtbox
+  m_TagString: Hurtbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -664,7 +664,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6496486151755998463}
-  m_BodyType: 1
+  m_BodyType: 2
   m_Simulated: 1
   m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0

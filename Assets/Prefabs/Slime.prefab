@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 6733594249347362211}
   - component: {fileID: 2235674880532191046}
   m_Layer: 7
-  m_Name: Hitbox
-  m_TagString: Hitbox
+  m_Name: Hurtbox
+  m_TagString: Hurtbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -79,15 +79,6 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             anim.SetBool("Attacking", true);
-            foreach (Transform child in enemies)
-            {
-                bool isClose = Vector3.Distance(transform.position, child.position) < 2f;
-                var stats = child.GetChild(0).GetComponent<StatsController>();
-                if (isClose && stats)
-                {
-                    stats.Damage(0.3f);
-                }
-            }
         }
         if (Input.GetMouseButtonDown(1))
         {

@@ -8,12 +8,9 @@ public class EnemyBehaviour : MonoBehaviour
     private Animator animator;
     private StatsController stats;
 
-    private System.DateTime lastAttack;
-
     private void Awake()
     {
         animator = transform.GetComponentInChildren<Animator>();
-        lastAttack = System.DateTime.Now;
         stats = GetComponent<StatsController>();
 
         stats.onDeath.AddListener(Die);
@@ -23,11 +20,6 @@ public class EnemyBehaviour : MonoBehaviour
     {
         bool isClose = Vector3.Distance(transform.position, player.transform.position) < 1.5f;
         animator.SetBool("Attacking", isClose);
-        if (isClose && (System.DateTime.Now - lastAttack).TotalSeconds > 0.5f)
-        {
-            player.GetComponent<StatsController>().Damage(0.8f);
-            lastAttack = System.DateTime.Now;
-        }
     }
 
     private void Die()

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 988767605459578808}
   - component: {fileID: 988767605459578809}
   - component: {fileID: 988767605459578814}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114,7 +114,7 @@ GameObject:
   - component: {fileID: 988767605621333993}
   - component: {fileID: 988767605621333999}
   - component: {fileID: 988767605621333998}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -190,7 +190,7 @@ GameObject:
   - component: {fileID: 988767606547709586}
   - component: {fileID: 988767606547709613}
   - component: {fileID: 988767606547709612}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: HPBarCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -289,7 +289,7 @@ GameObject:
   - component: {fileID: 988767606722750650}
   - component: {fileID: 988767606722750648}
   - component: {fileID: 988767606722750651}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -368,7 +368,7 @@ GameObject:
   - component: {fileID: 988767606895778472}
   - component: {fileID: 988767606895778475}
   - component: {fileID: 988767606895778474}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: BanditArcher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -517,7 +517,7 @@ GameObject:
   - component: {fileID: 988767607271170835}
   - component: {fileID: 988767607271170834}
   - component: {fileID: 988767607271170838}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -8,6 +8,7 @@ public class GenericMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Animator animator;
     private SpriteRenderer rd;
+    [HideInInspector]
     public bool dontUpdate = false;
 
     void Awake()

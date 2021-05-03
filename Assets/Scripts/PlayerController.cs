@@ -21,7 +21,6 @@ public class PlayerController : MonoBehaviour
 
     [Header("Skills")]
     public string sendSkill;
-    [HideInInspector]
     public float spellOffset = 0.8f;
     private SpelRuntime sr;
 

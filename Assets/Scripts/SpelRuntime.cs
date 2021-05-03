@@ -252,7 +252,7 @@ public class SpelRuntime : MonoBehaviour
         }
         else if (skillName == "earth")
         {
-            return new CastOrb("rock", pc, pfOrbEarth);
+            return new CastElement(skillName, pc, pfEarth);
         }
         else
         {

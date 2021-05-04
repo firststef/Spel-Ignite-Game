@@ -48,7 +48,7 @@ public class ElementSkill : MonoBehaviour
 
     private void OnParticleCollision(GameObject other)
     {
-        if (other.tag != "Hitbox")
+        if (other.tag != "Hurtbox")
         {
             return;
         }

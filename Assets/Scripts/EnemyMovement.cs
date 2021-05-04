@@ -33,6 +33,7 @@ public class EnemyMovement : MonoBehaviour
         }
 
         animator.SetBool("Moving", ag.velocity.x != 0 || ag.velocity.y != 0);
-        rd.flipX = ag.velocity.x == 0 ? rd.flipX : ag.velocity.x < 0;
+        bool sign = ag.velocity.x == 0 ? transform.eulerAngles.y == 180 : ag.velocity.x < 0;
+        transform.rotation = Quaternion.Euler(new Vector3(transform.eulerAngles.x, sign ? 180 : 0, transform.eulerAngles.z));
     }
 }

@@ -2,6 +2,8 @@ using Spells;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using System;
+using System.Collections.Specialized;
 
 public class StatsController : MonoBehaviour
 {
@@ -32,6 +34,18 @@ public class StatsController : MonoBehaviour
     [HideInInspector]
     public UnityEvent onDeath = new UnityEvent();
 
+    public struct EffectData
+    {
+        public float time;
+        public object data;
+    }
+    public OrderedDictionary effects = new OrderedDictionary();
+
+    [HideInInspector]
+    public UnityEvent<string> onAddEffect;
+    [HideInInspector]
+    public UnityEvent<string> onRemoveEffect;
+
     private void Awake()
     {
         currentHP = maxHP;
@@ -53,6 +67,23 @@ public class StatsController : MonoBehaviour
             AddMana(recoveryMP);
             mpChanged.Invoke();
             elapsedMP = 0;
+        }
+
+        string[] keys = new string[effects.Keys.Count];
+        effects.Keys.CopyTo(keys, 0);
+        foreach (string key in keys)
+        { 
+            var da = (EffectData)effects[key];
+            da.time -= Time.deltaTime;
+            if (da.time <= 0f)
+            {
+                ClearEffect(key);
+            }
+            else
+            {
+                effects.Remove(key);
+                effects.Add(key, da);
+            }
         }
     }
 
@@ -131,5 +162,38 @@ public class StatsController : MonoBehaviour
     public float GetSpeed()
     {
         return currentSpeed;
+    }
+
+    public void AddEffect(string effect, object data, float after, Action action)
+    {
+        if (after <= 0 || action == null) return;
+
+        var wasPresent = effects.Contains(effect);
+        EffectData oldData;
+        if (wasPresent)
+        {
+            oldData = (EffectData)effects[effect];
+            oldData.time = after;
+            effects.Remove(effect);
+        }
+        else
+        {
+            oldData = new EffectData { time = after, data = data };
+        }
+        effects.Add(effect, oldData);
+
+        if (!wasPresent)
+        {
+            onAddEffect.Invoke(effect);
+        }
+    }
+
+    public void ClearEffect(string effect)
+    {
+        if (effects.Contains(effect))
+        {
+            effects.Remove(effect);
+            onRemoveEffect.Invoke(effect);
+        }
     }
 }

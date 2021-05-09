@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Utils;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpelRuntime))]
@@ -34,7 +35,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public UnityEvent endSpell = new UnityEvent();
 
-    public Transform enemies;
+    private Transform enemies;
 
     private int gold = 0;
 
@@ -204,6 +205,8 @@ public class PlayerController : MonoBehaviour
         stats = GetComponent<StatsController>();
         anim = GetComponent<Animator>();
         mov = GetComponent<GenericMovement>();
+
+        FillUIStuff();
 
 #if UNITY_EDITOR
         #region whileSkill
@@ -376,12 +379,17 @@ public class PlayerController : MonoBehaviour
         };
         #endregion
 
-        sendSkill = JsonConvert.SerializeObject(water);
+        //sendSkill = JsonConvert.SerializeObject(water);
+        
+        sendSkill = "{'block':{'items':[{'which':'statement','statement':{'element':'fire','type':'ChargeStatement'},'type':'BlockItem'},{'which':'statement','statement':{'value':'releaseFromHand','type':'AnyStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'","\"");
+        
 #endif
 
         stats.hpChanged.AddListener(RefreshHealthBar);
         stats.mpChanged.AddListener(RefreshMPBar);
         stats.onDeath.AddListener(Die);
+        stats.onAddEffect.AddListener(AddEffect);
+        stats.onRemoveEffect.AddListener(RemoveEffect);
     }
 
     void Update()
@@ -421,7 +429,42 @@ public class PlayerController : MonoBehaviour
     /* UI stuff */
 
     [Header("UI")]
-    public Transform healthBar;
-    public Transform manaBar;
-    public Text goldText;
+    private Transform healthBar;
+    private Transform manaBar;
+    private Text goldText;
+    public GameObject effectBar;
+
+    private void FillUIStuff()
+    {
+        healthBar = GameObject.Find("LifeBar").transform;
+        manaBar = GameObject.Find("ManaBar").transform;
+        goldText = GameObject.Find("NumGold").GetComponent<Text>();
+        enemies = GameObject.Find("Enemies").transform;
+        //effectBar = GameObject.Find("Effects");
+    }
+
+    [Header("Effects")]
+    public GameObject[] prefabs;
+
+    public void AddEffect(string effect)
+    {
+        foreach(GameObject go in prefabs)
+        {
+            if (go.name == effect)
+            {
+                Instantiate(go, effectBar.transform);
+            }
+        }
+    }
+
+    private void RemoveEffect(string effect)
+    {
+        foreach (Transform child in effectBar.transform)
+        {
+            if (child.name.StartsWith(effect))
+            {
+                Destroy(child.gameObject);
+            }
+        }
+    }
 }

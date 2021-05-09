@@ -4,18 +4,18 @@ using Newtonsoft.Json.Linq;
 using Spells;
 using System.Linq;
 using System.Collections;
-using Utils;
-using System.Collections.Generic;
 
 public class SpelRuntime : MonoBehaviour
 {
     private PlayerController pc;
+    private StatsController stats;
     public bool vmIsRunning = false;
     public bool cancelling = false;
 
     private void Awake()
     {
         pc = GetComponent<PlayerController>();
+        stats = pc.GetComponent<StatsController>();
         pc.endSpell.AddListener(OnCancel);
 
 #if !UNITY_EDITOR && UNITY_WEBGL
@@ -81,13 +81,12 @@ public class SpelRuntime : MonoBehaviour
 
     private IEnumerator VisitDocumentAsync(JObject obj)
     {
-        vmIsRunning = true;
         validate(obj, "type", "Document");
+        vmIsRunning = true;
         cancelling = false;
         yield return VisitBlockAsync((JObject)obj["block"]);
         cancelling = false;
         vmIsRunning = false;
-        yield break;
     }
 
     private IEnumerator VisitBlockAsync(JObject obj)
@@ -97,7 +96,6 @@ public class SpelRuntime : MonoBehaviour
         {
             yield return VisitBlockItemAsync((JObject)blockItem);
         }
-        yield break;
     }
 
     private IEnumerator VisitBlockItemAsync(JObject obj)
@@ -121,52 +119,25 @@ public class SpelRuntime : MonoBehaviour
     private IEnumerator VisitStatementAsync(JObject obj)
     {
         validate(obj, "type");
-        if ((string)obj["type"] == "Call")
+        switch ((string)obj["type"])
         {
-            yield return VisitCall(obj);
-            yield break;
-        }
-        if ((string)obj["type"] == "WhileStatement")
-        {
-            yield return VisitWhileStatementAsync(obj);
-            yield break;
-        }
-        if ((string)obj["type"] == "NoneStatement")
-        {
-            yield break;
-        }
-        unimplemented();
-    }
-
-    private IEnumerator VisitWhileStatementAsync(JObject obj)
-    {
-        validate(obj, "expr");
-        validate(obj, "stmts");
-
-        while (true)
-        {
-            var expr = VisitNamedExpression((JObject)obj["expr"]);
-            if (!(expr is int || expr is float || expr is bool))
-            {
+            case "Call":
+                yield return VisitCall(obj);
+                yield break;
+            case "WhileStatement":
+                yield return VisitWhileStatementAsync(obj);
+                yield break;
+            case "NoneStatement":
+                yield break;
+            case "AnyStatement":
+                yield return VisitAnyStatementAsync(obj);
+                yield break;
+            case "ChargeStatement":
+                yield return VisitChargeStatementAsync(obj);
+                yield break;
+            default:
                 unimplemented();
-            }
-
-            Debug.Log((float)expr);
-
-            if ( (expr is float && (float)expr == 0f) ||
-                 (expr is bool && !(bool)expr) ||
-                 cancelling
-                )
-            {
-                Debug.Log("stopped");
-                break;
-            }
-
-            foreach (var stmt in (JArray)obj["stmts"])
-            {
-                yield return VisitStatementAsync((JObject)stmt);
-                yield return new WaitForSeconds(1f);
-            }
+                yield break;
         }
     }
 
@@ -197,10 +168,6 @@ public class SpelRuntime : MonoBehaviour
     private object VisitNamedExpression(JObject obj)
     {
         var name = (string)obj["name"];
-        if ((new[] { "fire", "water", "earth", "orb" }).Any(name.Contains))
-        {
-            return CreateSkill(obj);
-        }
         if ((new[] { "playerHealth", "playerMana" }).Any(name.Contains))
         {
             return GetVirtualValue(name);
@@ -239,9 +206,8 @@ public class SpelRuntime : MonoBehaviour
         }
     }
 
-    private Cast CreateSkill(JObject obj)
+    private Cast CreateElementSkill(string skillName)
     {
-        var skillName = (string)obj["name"];
         if (skillName == "water")
         {
             return new CastElement(skillName, pc, pfWater);
@@ -287,7 +253,7 @@ public class SpelRuntime : MonoBehaviour
                 return CreateOrbSkill((CastElement)spell);
             }
         }
-        if (spell is CastOrb)
+        else if (spell is CastOrb)
         {
             var casted = (CastOrb)spell;
             if (skillName == "growth")
@@ -299,8 +265,74 @@ public class SpelRuntime : MonoBehaviour
                 return new CastOrbFaster(casted);
             }
         }
-        //throw new Exception("skill modifier not found");
+        else
+        {
+            throw new Exception("skill modifier not found");
+        }
         return spell;
+    }
+
+    private IEnumerator VisitWhileStatementAsync(JObject obj)
+    {
+        validate(obj, "expr");
+        validate(obj, "stmts");
+
+        while (true)
+        {
+            var expr = VisitNamedExpression((JObject)obj["expr"]);
+            if (!(expr is int || expr is float || expr is bool))
+            {
+                unimplemented();
+            }
+
+            if ((expr is float && (float)expr == 0f) ||
+                 (expr is bool && !(bool)expr) ||
+                 cancelling
+                )
+            {
+                Debug.Log("stopped");
+                break;
+            }
+
+            foreach (var stmt in (JArray)obj["stmts"])
+            {
+                yield return VisitStatementAsync((JObject)stmt);
+                yield return new WaitForSeconds(0.2f);
+            }
+
+            yield return new WaitForSeconds(0.3f);
+        }
+    }
+
+    private IEnumerator VisitAnyStatementAsync(JObject obj)
+    {
+        validate(obj, "value");
+        
+        if ((string)obj["value"] == "releaseFromHand")
+        {
+            foreach(DictionaryEntry de in stats.effects)
+            {
+                var ef = (string)de.Key;
+                if (ef.EndsWith("_charged"))
+                {
+                    var skill = CreateElementSkill(ef.Substring(0, ef.IndexOf("_charged")));
+                    yield return CallSkill((ICastSpell)skill);
+
+                    yield return new WaitForSeconds(0.5f);
+                    yield break;
+                }
+            }
+        }
+        unreachable();
+    }
+
+    private IEnumerator VisitChargeStatementAsync(JObject obj)
+    {
+        validate(obj, "element");
+
+        string effect = (string)obj["element"] + "_charged";
+        stats.AddEffect(effect, 0, 5f, () => stats.ClearEffect(effect));
+        yield return new WaitForSeconds(1f);
     }
 
     private object GetVirtualValue(string name)
@@ -321,7 +353,6 @@ public class SpelRuntime : MonoBehaviour
 
     private IEnumerator CallSkill(ICastSpell spell)
     {
-        var stats = pc.GetComponent<StatsController>();
         if (spell.isWorthy(stats))
         {
             pc.castCounter++;

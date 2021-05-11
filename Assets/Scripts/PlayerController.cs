@@ -19,13 +19,14 @@ public class PlayerController : MonoBehaviour
     private StatsController stats;
     private Animator anim;
     private GenericMovement mov;
+    private Rigidbody2D rb;
+    private SpelRuntime sr;
+    public SpeechController speech;
 
     [Header("Skills")]
     public string sendSkill;
     public float spellOffset = 0.8f;
-    private SpelRuntime sr;
 
-    private Rigidbody2D rb;
     private bool isKeyPressed = false;
     private Vector3 lastMousePos;
     private bool isCasting = false;
@@ -35,9 +36,219 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public UnityEvent endSpell = new UnityEvent();
 
-    private Transform enemies;
-
     private int gold = 0;
+
+    /* Generic functions */
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpelRuntime>();
+        stats = GetComponent<StatsController>();
+        anim = GetComponent<Animator>();
+        mov = GetComponent<GenericMovement>();
+        speech = GetComponentInChildren<SpeechController>();
+
+        FillUIStuff();
+
+#if UNITY_EDITOR
+        #region whileSkill
+        var whileSkill = new
+        {
+            block = new
+            {
+                items = new[] {
+                    new {
+                        which = "statement",
+                        statement = new {
+                            expr= new {
+                                name= "playerMana",
+                                type= "NamedExpression"
+                            },
+                            stmts= new[] {
+                                new {
+                                    expr= new {
+                                        expr= new {
+                                            name= "fire",
+                                            type= "NamedExpression"
+                                        },
+                                        value= new {
+                                            name= "orb",
+                                            type= "NamedExpression"
+                                        },
+                                        type= "Modification"
+                                    },
+                                    type= "Call"
+                                }
+                            },
+                            type = "WhileStatement"
+                        },
+                        type = "BlockItem"
+                    }
+                },
+                type = "Block"
+            },
+            type = "Document"
+        };
+        #endregion
+
+        #region fire
+        var fire = new
+        {
+            block = new
+            {
+                items = new[] {
+                        new {
+                            which= "statement",
+                            statement= new {
+                                expr= new {
+                                    name= "fire",
+                                    type= "NamedExpression"
+                                },
+                                type= "Call"
+                            },
+                            type= "BlockItem"
+                        }
+                },
+                type = "Block"
+            },
+            type = "Document"
+        };
+        #endregion
+
+        #region water
+        var water = new
+        {
+            block = new
+            {
+                items = new[] {
+                        new {
+                            which= "statement",
+                            statement= new {
+                                expr= new {
+                                    name= "water",
+                                    type= "NamedExpression"
+                                },
+                                type= "Call"
+                            },
+                            type= "BlockItem"
+                        }
+                },
+                type = "Block"
+            },
+            type = "Document"
+        };
+        #endregion
+
+        #region earth
+        var earth = new
+        {
+            block = new
+            {
+                items = new[] {
+                        new {
+                            which= "statement",
+                            statement= new {
+                                expr= new {
+                                    name= "earth",
+                                    type= "NamedExpression"
+                                },
+                                type= "Call"
+                            },
+                            type= "BlockItem"
+                        }
+                },
+                type = "Block"
+            },
+            type = "Document"
+        };
+        #endregion
+
+        #region fireOrb
+        var fireOrb = new
+        {
+            block = new
+            {
+                items = new[] {
+                            new {
+                            which= "statement",
+                            statement= new  {
+                                expr= new {
+                                    expr= new {
+                                        name= "fire",
+                                        type= "NamedExpression"
+                                    },
+                                    value= new {
+                                        name= "orb",
+                                        type= "NamedExpression"
+                                    },
+                                    type= "Modification"
+                                },
+                                type= "Call"
+                            },
+                            type= "BlockItem"
+                        }
+                },
+                type = "Block"
+            },
+            type = "Document"
+        };
+        #endregion
+
+        #region firespeed
+        var firespeed = new
+        {
+            block = new
+            {
+                items = new[] {
+                            new {
+                            which= "statement",
+                            statement= new  {
+                                expr= new {
+                                    expr= new {
+                                        name= "fire",
+                                        type= "NamedExpression"
+                                    },
+                                    value= new {
+                                        name= "speed",
+                                        type= "NamedExpression"
+                                    },
+                                    type= "Modification"
+                                },
+                                type= "Call"
+                            },
+                            type= "BlockItem"
+                        }
+                },
+                type = "Block"
+            },
+            type = "Document"
+        };
+        #endregion
+
+        //sendSkill = JsonConvert.SerializeObject(water);
+
+        sendSkill = "{'block':{'items':[{'which':'statement','statement':{'element':'fire','type':'ChargeStatement'},'type':'BlockItem'},{'which':'statement','statement':{'value':'releaseFromHand','type':'AnyStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
+        sendSkill = "{'block':{'items':[{'which':'statement','statement':{'message':'ceva','tone':'say','type':'PrintStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
+
+#endif
+
+        stats.hpChanged.AddListener(RefreshHealthBar);
+        stats.mpChanged.AddListener(RefreshMPBar);
+        stats.onDeath.AddListener(Die);
+        stats.onAddEffect.AddListener(AddEffect);
+        stats.onRemoveEffect.AddListener(RemoveEffect);
+    }
+
+    void Update()
+    {
+        isCasting = sr.vmIsRunning || castCounter != 0;
+        anim.SetBool("Casting", isCasting);
+        mov.dontUpdate = isCasting;
+
+        HandleMovement();
+        HandleActions();
+    }
 
     /* Actions */
 
@@ -196,212 +407,6 @@ public class PlayerController : MonoBehaviour
         handle.Complete();
     }
 
-    /* Generic functions */
-
-    void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        sr = GetComponent<SpelRuntime>();
-        stats = GetComponent<StatsController>();
-        anim = GetComponent<Animator>();
-        mov = GetComponent<GenericMovement>();
-
-        FillUIStuff();
-
-#if UNITY_EDITOR
-        #region whileSkill
-        var whileSkill = new
-        {
-            block = new
-            {
-                items = new[] {
-                    new {
-                        which = "statement",
-                        statement = new {
-                            expr= new {
-                                name= "playerMana",
-                                type= "NamedExpression"
-                            },
-                            stmts= new[] {
-                                new {
-                                    expr= new {
-                                        expr= new {
-                                            name= "fire",
-                                            type= "NamedExpression"
-                                        },
-                                        value= new {
-                                            name= "orb",
-                                            type= "NamedExpression"
-                                        },
-                                        type= "Modification"
-                                    },
-                                    type= "Call"
-                                }
-                            },
-                            type = "WhileStatement"
-                        },
-                        type = "BlockItem"
-                    }
-                },
-                type = "Block"
-            },
-            type = "Document"
-        };
-        #endregion
-
-        #region fire
-        var fire = new {
-            block= new {
-                items= new[] {
-                        new {
-                            which= "statement",
-                            statement= new {
-                                expr= new {
-                                    name= "fire",
-                                    type= "NamedExpression"
-                                },
-                                type= "Call"
-                            },
-                            type= "BlockItem"
-                        }
-                },
-                type= "Block"
-            },
-            type= "Document"
-        };
-        #endregion
-
-        #region water
-        var water = new
-        {
-            block = new
-            {
-                items = new[] {
-                        new {
-                            which= "statement",
-                            statement= new {
-                                expr= new {
-                                    name= "water",
-                                    type= "NamedExpression"
-                                },
-                                type= "Call"
-                            },
-                            type= "BlockItem"
-                        }
-                },
-                type = "Block"
-            },
-            type = "Document"
-        };
-        #endregion
-
-        #region earth
-        var earth = new
-        {
-            block = new
-            {
-                items = new[] {
-                        new {
-                            which= "statement",
-                            statement= new {
-                                expr= new {
-                                    name= "earth",
-                                    type= "NamedExpression"
-                                },
-                                type= "Call"
-                            },
-                            type= "BlockItem"
-                        }
-                },
-                type = "Block"
-            },
-            type = "Document"
-        };
-        #endregion
-
-        #region fireOrb
-        var fireOrb = new {
-            block = new {
-                items = new[] {
-                            new {
-                            which= "statement",
-                            statement= new  {
-                                expr= new {
-                                    expr= new {
-                                        name= "fire",
-                                        type= "NamedExpression"
-                                    },
-                                    value= new {
-                                        name= "orb",
-                                        type= "NamedExpression"
-                                    },
-                                    type= "Modification"
-                                },
-                                type= "Call"
-                            },
-                            type= "BlockItem"
-                        }
-                },
-                type = "Block"
-            },
-            type = "Document"
-        };
-        #endregion
-
-        #region firespeed
-        var firespeed = new
-        {
-            block = new
-            {
-                items = new[] {
-                            new {
-                            which= "statement",
-                            statement= new  {
-                                expr= new {
-                                    expr= new {
-                                        name= "fire",
-                                        type= "NamedExpression"
-                                    },
-                                    value= new {
-                                        name= "speed",
-                                        type= "NamedExpression"
-                                    },
-                                    type= "Modification"
-                                },
-                                type= "Call"
-                            },
-                            type= "BlockItem"
-                        }
-                },
-                type = "Block"
-            },
-            type = "Document"
-        };
-        #endregion
-
-        //sendSkill = JsonConvert.SerializeObject(water);
-        
-        sendSkill = "{'block':{'items':[{'which':'statement','statement':{'element':'fire','type':'ChargeStatement'},'type':'BlockItem'},{'which':'statement','statement':{'value':'releaseFromHand','type':'AnyStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'","\"");
-        
-#endif
-
-        stats.hpChanged.AddListener(RefreshHealthBar);
-        stats.mpChanged.AddListener(RefreshMPBar);
-        stats.onDeath.AddListener(Die);
-        stats.onAddEffect.AddListener(AddEffect);
-        stats.onRemoveEffect.AddListener(RemoveEffect);
-    }
-
-    void Update()
-    {
-        isCasting = sr.vmIsRunning || castCounter != 0;
-        anim.SetBool("Casting", isCasting);
-        mov.dontUpdate = isCasting;
-
-        HandleMovement();
-        HandleActions();
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.name.StartsWith("Block"))
@@ -432,15 +437,14 @@ public class PlayerController : MonoBehaviour
     private Transform healthBar;
     private Transform manaBar;
     private Text goldText;
-    public GameObject effectBar;
+    private GameObject effectBar;
 
     private void FillUIStuff()
     {
         healthBar = GameObject.Find("LifeBar").transform;
         manaBar = GameObject.Find("ManaBar").transform;
         goldText = GameObject.Find("NumGold").GetComponent<Text>();
-        enemies = GameObject.Find("Enemies").transform;
-        //effectBar = GameObject.Find("Effects");
+        effectBar = GameObject.Find("Effects");
     }
 
     [Header("Effects")]

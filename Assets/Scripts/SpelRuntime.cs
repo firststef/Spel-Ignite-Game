@@ -135,6 +135,9 @@ public class SpelRuntime : MonoBehaviour
             case "ChargeStatement":
                 yield return VisitChargeStatementAsync(obj);
                 yield break;
+            case "PrintStatement":
+                yield return VisitPrintStatementAsync(obj);
+                yield break;
             default:
                 unimplemented();
                 yield break;
@@ -333,6 +336,15 @@ public class SpelRuntime : MonoBehaviour
         string effect = (string)obj["element"] + "_charged";
         stats.AddEffect(effect, 0, 5f, () => stats.ClearEffect(effect));
         yield return new WaitForSeconds(1f);
+    }
+
+    private IEnumerator VisitPrintStatementAsync(JObject obj)
+    {
+        validate(obj, "message");
+        validate(obj, "tone");
+
+        pc.speech.Speak((string)obj["message"]);
+        yield return new WaitForSeconds(0.05f);
     }
 
     private object GetVirtualValue(string name)

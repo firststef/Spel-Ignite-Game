@@ -21,20 +21,13 @@ public class PlayerController : MonoBehaviour
     private GenericMovement mov;
     private Rigidbody2D rb;
     private SpelRuntime sr;
-    public SpeechController speech;
 
     [Header("Skills")]
     public string sendSkill;
-    public float spellOffset = 0.8f;
 
     private bool isKeyPressed = false;
     private Vector3 lastMousePos;
     private bool isCasting = false;
-
-    [HideInInspector]
-    public int castCounter = 0;
-    [HideInInspector]
-    public UnityEvent endSpell = new UnityEvent();
 
     private int gold = 0;
 
@@ -47,7 +40,6 @@ public class PlayerController : MonoBehaviour
         stats = GetComponent<StatsController>();
         anim = GetComponent<Animator>();
         mov = GetComponent<GenericMovement>();
-        speech = GetComponentInChildren<SpeechController>();
 
         FillUIStuff();
 
@@ -230,6 +222,7 @@ public class PlayerController : MonoBehaviour
 
         sendSkill = "{'block':{'items':[{'which':'statement','statement':{'element':'fire','type':'ChargeStatement'},'type':'BlockItem'},{'which':'statement','statement':{'value':'releaseFromHand','type':'AnyStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
         sendSkill = "{'block':{'items':[{'which':'statement','statement':{'message':'ceva','tone':'say','type':'PrintStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
+        sendSkill = "{    'block': {        'items': [            {                'which': 'statement',                'statement': {                    'object': {                        'name': 'orb',                        'type': 'NamedExpression'                    },                    'holder': 'lefthand',                    'type': 'CreateStatement'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'expr': {                        'name': 'orb',                        'type': 'NamedExpression'                    },                    'value': {                        'expr': {                            'name': 'orb',                            'type': 'NamedExpression'                        },                        'value': {                            'name': 'fire',                            'type': 'NamedExpression'                        },                        'type': 'Modification'                    },                    'type': 'Assignment'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'object': 'orb',                    'type': 'ThrowStatement'                },                'type': 'BlockItem'            }        ],        'type': 'Block'    },    'type': 'Document'}".Replace("'", "\"");
 
 #endif
 
@@ -242,7 +235,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        isCasting = sr.vmIsRunning || castCounter != 0;
+        isCasting = sr.vmIsRunning || stats.castCounter != 0;
         anim.SetBool("Casting", isCasting);
         mov.dontUpdate = isCasting;
 
@@ -298,7 +291,7 @@ public class PlayerController : MonoBehaviour
             {
                 isKeyPressed = true;
 
-                if (castCounter == 0 && !sr.cancelling)
+                if (stats.castCounter == 0 && !sr.cancelling)
                 {
 #if !UNITY_EDITOR && UNITY_WEBGL
                     RequestAction();
@@ -308,7 +301,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    endSpell.Invoke();
+                    stats.EndSpell();
                 }
             }
         }

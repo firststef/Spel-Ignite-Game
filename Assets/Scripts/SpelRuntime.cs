@@ -4,19 +4,21 @@ using Newtonsoft.Json.Linq;
 using Spells;
 using System.Linq;
 using System.Collections;
+using Utils;
 
+[RequireComponent(typeof(StatsController))]
 public class SpelRuntime : MonoBehaviour
 {
-    private PlayerController pc;
     private StatsController stats;
+    private SpeechController speech;
     public bool vmIsRunning = false;
     public bool cancelling = false;
 
     private void Awake()
     {
-        pc = GetComponent<PlayerController>();
-        stats = pc.GetComponent<StatsController>();
-        pc.endSpell.AddListener(OnCancel);
+        stats = GetComponent<StatsController>();
+        speech = stats.GetComponentInChildren<SpeechController>();
+        stats.endSpell.AddListener(OnCancel);
 
 #if !UNITY_EDITOR && UNITY_WEBGL
         WebGLInput.captureAllKeyboardInput = false;
@@ -138,6 +140,12 @@ public class SpelRuntime : MonoBehaviour
             case "PrintStatement":
                 yield return VisitPrintStatementAsync(obj);
                 yield break;
+            case "CreateStatement":
+                yield return VisitCreateStatementAsync(obj);
+                yield break;
+            case "Assignment":
+                yield return VisitAssignStatementAsync(obj);
+                yield break;
             default:
                 unimplemented();
                 yield break;
@@ -150,22 +158,25 @@ public class SpelRuntime : MonoBehaviour
         
         var callable = (JObject)obj["expr"];
         // var prms = (object)obj["params"];
-        ICastSpell spell;
-        if ((string)callable["type"] == "NamedExpression")
-        {
-            spell = (ICastSpell)VisitNamedExpression(callable);
-        }
-        else if ((string)callable["type"] == "Modification")
-        {
-            spell = (ICastSpell)VisitModification(callable);
-        }
-        else
-        {
-            throw new Exception("Call type not found");
-        }
+        ICastSpell spell = (ICastSpell)VisitExpression(callable); //check is of type
 
         // Player casts
         yield return CallSkill(spell);
+    }
+
+    private object VisitExpression(JObject obj)
+    {
+        switch ((string)obj["type"])
+        {
+            case "NamedExpression":
+                return VisitNamedExpression(obj);
+            case "Modification":
+                return VisitModification(obj);
+            default:
+                unreachable();
+                break;
+        }
+        return null;
     }
 
     private object VisitNamedExpression(JObject obj)
@@ -175,6 +186,10 @@ public class SpelRuntime : MonoBehaviour
         {
             return GetVirtualValue(name);
         }
+        //if (name == "orb")
+        //{
+        //    return Cre
+        //}
         unimplemented();
         return null;
     }
@@ -182,20 +197,7 @@ public class SpelRuntime : MonoBehaviour
     private object VisitModification(JObject obj)
     {
         var callable = (JObject)obj["expr"];
-        ICastSpell spell;
-        if ((string)callable["type"] == "NamedExpression")
-        {
-            spell = (ICastSpell)VisitNamedExpression(callable);
-        }
-        else if ((string)callable["type"] == "Modification")
-        {
-            spell = (ICastSpell)VisitModification(callable);
-        }
-        else
-        {
-            unimplemented();
-            return null;
-        }
+        ICastSpell spell = (ICastSpell)VisitExpression(callable); // check is of type
 
         var cmodify = (JObject)obj["value"];
         if ((string)cmodify["type"] == "NamedExpression")
@@ -213,15 +215,15 @@ public class SpelRuntime : MonoBehaviour
     {
         if (skillName == "water")
         {
-            return new CastElement(skillName, pc, pfWater);
+            return new CastElement(skillName, stats, pfWater);
         }
         else if (skillName == "fire")
         {
-            return new CastElement(skillName, pc, pfFire);
+            return new CastElement(skillName, stats, pfFire);
         }
         else if (skillName == "earth")
         {
-            return new CastElement(skillName, pc, pfEarth);
+            return new CastElement(skillName, stats, pfEarth);
         }
         else
         {
@@ -233,15 +235,15 @@ public class SpelRuntime : MonoBehaviour
     {
         if (spell.name == "fire")
         {
-            return new CastOrb("flames", pc, pfOrbFire);
+            return new CastOrb("flames", stats, pfOrbFire, UtilsClass.GetMousePosition2D());
         }
         if (spell.name == "water")
         {
-            return new CastOrb("splash", pc, pfOrbWater);
+            return new CastOrb("splash", stats, pfOrbWater, UtilsClass.GetMousePosition2D());
         }
         if (spell.name == "earth")
         {
-            return new CastOrb("rock", pc, pfOrbEarth);
+            return new CastOrb("rock", stats, pfOrbEarth, UtilsClass.GetMousePosition2D());
         }
         throw new Exception("skill not found");
     }
@@ -282,7 +284,7 @@ public class SpelRuntime : MonoBehaviour
 
         while (true)
         {
-            var expr = VisitNamedExpression((JObject)obj["expr"]);
+            var expr = VisitExpression((JObject)obj["expr"]);
             if (!(expr is int || expr is float || expr is bool))
             {
                 unimplemented();
@@ -343,7 +345,19 @@ public class SpelRuntime : MonoBehaviour
         validate(obj, "message");
         validate(obj, "tone");
 
-        pc.speech.Speak((string)obj["message"]);
+        speech.Speak((string)obj["message"]);
+        yield return new WaitForSeconds(0.05f);
+    }
+
+    private IEnumerator VisitCreateStatementAsync(JObject obj)
+    {
+        
+        yield return new WaitForSeconds(0.05f);
+    }
+
+    private IEnumerator VisitAssignStatementAsync(JObject obj)
+    {
+
         yield return new WaitForSeconds(0.05f);
     }
 
@@ -351,11 +365,11 @@ public class SpelRuntime : MonoBehaviour
     {
         if (name == "playerMana")
         {
-            return pc.GetComponent<StatsController>().GetMP();
+            return stats.GetMP(); // todo playerMana => mana
         }
         if (name == "playerHealth")
         {
-            return pc.GetComponent<StatsController>().GetHP();
+            return stats.GetComponent<StatsController>().GetHP();
         }
         unimplemented();
         return null;
@@ -367,7 +381,7 @@ public class SpelRuntime : MonoBehaviour
     {
         if (spell.isWorthy(stats))
         {
-            pc.castCounter++;
+            stats.castCounter++;
             yield return new WaitForSeconds(0.5f);
             spell.cast();
             spell.applyConsequences(stats);
@@ -377,11 +391,13 @@ public class SpelRuntime : MonoBehaviour
 
     [Header("Skill prefabs")]
 
-    public Transform pfWater;
-    public Transform pfFire;
-    public Transform pfEarth;
+    public GameObject pfWater;
+    public GameObject pfFire;
+    public GameObject pfEarth;
 
-    public Transform pfOrbWater;
-    public Transform pfOrbFire;
-    public Transform pfOrbEarth;
+    public GameObject pfOrbWater;
+    public GameObject pfOrbFire;
+    public GameObject pfOrbEarth;
+
+    //todo teoretic pot sa scap de corutine daca fac un Update care efectueaza actiuni puse de async-uri
 }

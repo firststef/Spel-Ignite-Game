@@ -24,6 +24,12 @@ public class StatsController : MonoBehaviour
     public float maxSpeed = 1f;
     private float currentSpeed;
 
+    public float spellOffset = 0.8f;
+    [HideInInspector]
+    public int castCounter = 0;
+    [HideInInspector]
+    public UnityEvent endSpell = new UnityEvent();
+
     private bool dead = false;
     private bool isInvincible = false;
 
@@ -195,5 +201,10 @@ public class StatsController : MonoBehaviour
             effects.Remove(effect);
             onRemoveEffect.Invoke(effect);
         }
+    }
+
+    public void EndSpell()
+    {
+        endSpell.Invoke();
     }
 }

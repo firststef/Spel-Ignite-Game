@@ -5,16 +5,16 @@ using Utils;
 public class ElementSkill : MonoBehaviour
 {
     CastElement spell;
-    PlayerController pc;
+    StatsController stats;
     float sustainManaCost = 2;
     float lastConsumeTime = 0;
     float timeTillConsume = 3f;
 
-    public void Setup(PlayerController pc, CastElement spell)
+    public void Setup(StatsController stats, CastElement spell)
     {
         this.spell = spell;
-        this.pc = pc;
-        pc.endSpell.AddListener(Die);
+        this.stats = stats;
+        stats.endSpell.AddListener(Die);
     }
 
     private void Update()
@@ -30,8 +30,8 @@ public class ElementSkill : MonoBehaviour
         if (lastConsumeTime > timeTillConsume)
         {
             lastConsumeTime = 0;
-            pc.GetComponent<StatsController>().ConsumeMana(sustainManaCost);
-            if (pc.GetComponent<StatsController>().GetMP() < 0)
+            stats.ConsumeMana(sustainManaCost);
+            if (stats.GetMP() < 0)
             {
                 Die();
             }
@@ -42,7 +42,7 @@ public class ElementSkill : MonoBehaviour
 
     private void Die()
     {
-        pc.castCounter--;
+        stats.castCounter--;
         Destroy(gameObject);
     }
 

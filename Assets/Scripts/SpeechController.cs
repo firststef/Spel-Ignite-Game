@@ -24,7 +24,7 @@ public class SpeechController : MonoBehaviour
     {
         transform.GetChild(0).localRotation = transform.parent.rotation;
 
-        if (lineTime > 0)
+        if (lineTime >= 0)
         {
             lineTime -= Time.deltaTime;
         }
@@ -39,7 +39,7 @@ public class SpeechController : MonoBehaviour
         }
         else
         {
-            if (lineTime < 0)
+            if (lineTime <= 0)
             {
                 if (lines.Count > 0)
                 {

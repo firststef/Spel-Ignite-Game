@@ -35,7 +35,7 @@ public class PauseControl : MonoBehaviour
             {
                 toggle.SetIsOnWithoutNotify(paused);
             }
-            
+
 #if !UNITY_EDITOR && UNITY_WEBGL
             if (paused) {
                 GamePaused();
@@ -43,11 +43,16 @@ public class PauseControl : MonoBehaviour
                 GameUnpaused();
             }
 #endif
-            
-            Time.timeScale = paused ? 0f : 1;
+
+            StopTime(paused);
             pauseOverlay.SetActive(paused);            
             gameIsPaused = paused;
         }
+    }
+
+    public void StopTime(bool enabled)
+    {
+        Time.timeScale = enabled ? 0f : 1;
     }
 
     public void ToggleFromButton(Toggle change)

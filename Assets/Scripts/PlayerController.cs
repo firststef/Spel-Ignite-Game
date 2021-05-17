@@ -6,10 +6,8 @@ using Unity.Jobs;
 using Unity.Collections;
 using Newtonsoft.Json;
 using UnityEngine.UI;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Utils;
-using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(SpelRuntime))]
@@ -221,8 +219,8 @@ public class PlayerController : MonoBehaviour
         //sendSkill = JsonConvert.SerializeObject(water);
 
         sendSkill = "{'block':{'items':[{'which':'statement','statement':{'element':'fire','type':'ChargeStatement'},'type':'BlockItem'},{'which':'statement','statement':{'value':'releaseFromHand','type':'AnyStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
-        sendSkill = "{'block':{'items':[{'which':'statement','statement':{'message':'ceva','tone':'say','type':'PrintStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
         sendSkill = "{    'block': {        'items': [            {                'which': 'statement',                'statement': {                    'object': {                        'name': 'orb',                        'type': 'NamedExpression'                    },                    'holder': 'lefthand',                    'type': 'CreateStatement'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'expr': {                        'name': 'orb',                        'type': 'NamedExpression'                    },                    'value': {                        'expr': {                            'name': 'orb',                            'type': 'NamedExpression'                        },                        'value': {                            'name': 'fire',                            'type': 'NamedExpression'                        },                        'type': 'Modification'                    },                    'type': 'Assignment'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'object': 'orb',                    'type': 'ThrowStatement'                },                'type': 'BlockItem'            }        ],        'type': 'Block'    },    'type': 'Document'}".Replace("'", "\"");
+        sendSkill = "{'block':{'items':[{'which':'statement','statement':{'message':'ceva','tone':'say','type':'PrintStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
 
 #endif
 
@@ -239,8 +237,10 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("Casting", isCasting);
         mov.dontUpdate = isCasting;
 
-        HandleMovement();
-        HandleActions();
+        if (!PauseControl.gameIsPaused) {
+            HandleMovement();
+            HandleActions();
+        }
     }
 
     /* Actions */

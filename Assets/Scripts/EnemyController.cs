@@ -24,7 +24,7 @@ public class EnemyController : MonoBehaviour
     private bool wasAttacking = false;
 
     [Header("Setup")]
-    public PlayerController player;
+    private Transform player;
     public Transform goldPrefab;
 
     private Animator animator;
@@ -34,6 +34,7 @@ public class EnemyController : MonoBehaviour
 
     private void Awake()
     {
+        player = GameObject.Find("Player").GetComponent<Transform>();
         animator = transform.GetComponentInChildren<Animator>();
         stats = GetComponent<StatsController>();
 
@@ -45,14 +46,14 @@ public class EnemyController : MonoBehaviour
 
         animator = GetComponentInChildren<Animator>();
         stats = GetComponent<StatsController>();
-        target = player.transform;
+        target = player;
     }
 
     private void Update()
     {
         if (type == AttackType.Ranged && wasAttacking && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
         {
-            new CastOrb("projectile", stats, projectile, player.transform.position).cast();
+            new CastOrb("projectile", stats, projectile, player.position).cast();
         }
         wasAttacking = animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
 
@@ -72,7 +73,7 @@ public class EnemyController : MonoBehaviour
             }
         }
 
-        bool isClose = Vector3.Distance(transform.position, player.transform.position) < (type == AttackType.Melee ? hitRange : findRange);
+        bool isClose = Vector3.Distance(transform.position, player.position) < (type == AttackType.Melee ? hitRange : findRange);
         if (timeSinceLast >= 0)
         {
             timeSinceLast -= Time.deltaTime;
@@ -103,7 +104,7 @@ public class EnemyController : MonoBehaviour
         }
 
         animator.SetBool("Moving", ag.velocity.x != 0 || ag.velocity.y != 0);
-        bool sign = ag.velocity.x == 0 ? transform.eulerAngles.y == 180 || (player.transform.position.x < transform.position.x) : ag.velocity.x < 0;
+        bool sign = ag.velocity.x == 0 ? transform.eulerAngles.y == 180 || (player.position.x < transform.position.x) : ag.velocity.x < 0;
         transform.rotation = Quaternion.Euler(new Vector3(transform.eulerAngles.x, sign ? 180 : 0, transform.eulerAngles.z));
     }
 

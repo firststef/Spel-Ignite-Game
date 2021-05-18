@@ -12,7 +12,7 @@ public class EnemyController : MonoBehaviour
         Ranged
     };
     public AttackType type = AttackType.Melee;
-    private float findRange = 20f;
+    public float findRange = 10f;
 
     [Header("Melee")]
     public float hitRange = 1.5f;

@@ -431,6 +431,7 @@ MonoBehaviour:
   maxMP: 10
   recoveryMP: 0.5
   recoverMPTime: 30
+  maxDamage: 1
   maxSpeed: 1
   spellOffset: 0.8
   castCounter: 0
@@ -466,12 +467,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
+  findRange: 15
   hitRange: 1.5
   projectile: {fileID: 2083273492770020836, guid: ab06cb28e7e907e418653ca3eba13a20, type: 3}
   cooldown: 1.5
   projectileSpeed: 6
   projectileDamage: 3
   goldPrefab: {fileID: 1232510664461254067, guid: 9ef53951bbc573e4bb7706b7484f8729, type: 3}
+  morph: {fileID: 0}
 --- !u!50 &988767606895778475
 Rigidbody2D:
   serializedVersion: 4

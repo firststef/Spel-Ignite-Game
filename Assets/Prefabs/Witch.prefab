@@ -72,12 +72,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9edf1f0bd87a52049b75fcbddcf04aa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 6
+  maxHP: 15
   recoveryHP: 0
   recoverHPTime: 60
   maxMP: 10
   recoveryMP: 0.5
   recoverMPTime: 30
+  maxDamage: 1
   maxSpeed: 1
   spellOffset: 0.8
   castCounter: 0
@@ -113,6 +114,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
+  findRange: 20
   hitRange: 1.5
   projectile: {fileID: 1436936363267041619, guid: 9d75006448e9bd740b1b488059e04c7f, type: 3}
   cooldown: 0.5

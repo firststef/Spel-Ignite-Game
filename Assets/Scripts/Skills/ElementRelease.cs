@@ -2,17 +2,17 @@ using Spells;
 using UnityEngine;
 using Utils;
 
-public class ElementSkill : MonoBehaviour
+public class ElementRelease : MonoBehaviour
 {
-    CastElement spell;
+    ElementSkill skill;
     StatsController st;
     float sustainManaCost = 2;
     float lastConsumeTime = 0;
     float timeTillConsume = 3f;
 
-    public void Setup(StatsController stats, CastElement spell)
+    public void Setup(StatsController stats, Spells.ElementSkill skill)
     {
-        this.spell = spell;
+        this.skill = skill;
         st = stats;
         stats.endSpell.AddListener(Die);
     }
@@ -56,7 +56,7 @@ public class ElementSkill : MonoBehaviour
         var stats = other.GetComponentInParent<StatsController>();
         if (stats && st.allegiance != stats.allegiance && st.GetInstanceID() != stats.GetInstanceID())
         {
-            stats.Damage(spell.damage); // todo handled more correctly by watching skill type 
+            skill.applyOnAttack(stats);
         }
     }
 }

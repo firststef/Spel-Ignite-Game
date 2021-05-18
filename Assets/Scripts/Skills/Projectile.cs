@@ -5,21 +5,19 @@ using Utils;
 public class Projectile : MonoBehaviour
 {
     private Vector3 direction;
-    private float moveSpeed = 0;
-    private CastOrb spell;
+    private RangedSkill skill;
 
-    public void Setup(Vector3 direction, float moveSpeed, CastOrb spell)
+    public void Setup(Vector3 direction, float moveSpeed, RangedSkill skill)
     {
         this.direction = direction;
-        this.moveSpeed = moveSpeed;
-        this.spell = spell;
+        this.skill = skill;
         transform.eulerAngles = new Vector3(0, 0, UtilsClass.GetAngleFromVectorFloat(direction));
         Destroy(gameObject, 5f);
     }
 
-    private void Update()
+    void Update()
     {
-        transform.position += moveSpeed * direction * Time.deltaTime;
+        transform.position += skill.moveSpeed * direction * Time.deltaTime;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -30,9 +28,9 @@ public class Projectile : MonoBehaviour
         }
 
         var stats = collision.gameObject.GetComponentInParent<StatsController>();
-        if (stats && spell.caster.allegiance != stats.allegiance && spell.caster.GetInstanceID() != stats.GetInstanceID())
+        if (stats && skill.caster.allegiance != stats.allegiance && skill.caster.GetInstanceID() != stats.GetInstanceID())
         {
-            stats.Damage(spell.damage); // todo handled more correctly by watching skill type 
+            skill.applyOnAttack(stats);
             Destroy(gameObject);
         }
     }

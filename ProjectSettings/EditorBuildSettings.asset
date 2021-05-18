@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BanditForest.unity
     guid: 560a27fd348872742825a6b8370beb98
+  - enabled: 1
+    path: Assets/Scenes/WitchForest.unity
+    guid: 203d4adee1a4c2747b5ddab532e988f3
   m_configObjects: {}

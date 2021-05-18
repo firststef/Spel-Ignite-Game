@@ -211,19 +211,19 @@ public class SpelRuntime : MonoBehaviour
         }
     }
 
-    private Cast CreateElementSkill(string skillName)
+    private Skill CreateElementSkill(string skillName)
     {
         if (skillName == "water")
         {
-            return new CastElement(skillName, stats, pfWater);
+            return new Spells.ElementSkill(skillName, stats, pfWater);
         }
         else if (skillName == "fire")
         {
-            return new CastElement(skillName, stats, pfFire);
+            return new Spells.ElementSkill(skillName, stats, pfFire);
         }
         else if (skillName == "earth")
         {
-            return new CastElement(skillName, stats, pfEarth);
+            return new Spells.ElementSkill(skillName, stats, pfEarth);
         }
         else
         {
@@ -231,19 +231,19 @@ public class SpelRuntime : MonoBehaviour
         }
     }
 
-    private CastOrb CreateOrbSkill(CastElement spell)
+    private RangedSkill CreateRangedSkill(Spells.ElementSkill spell)
     {
         if (spell.name == "fire")
         {
-            return new CastOrb("flames", stats, pfOrbFire, UtilsClass.GetMousePosition2D(), 1f);
+            return new RangedSkill("flames", stats, pfOrbFire, UtilsClass.GetMousePosition2D());
         }
         if (spell.name == "water")
         {
-            return new CastOrb("splash", stats, pfOrbWater, UtilsClass.GetMousePosition2D(), 1f);
+            return new RangedSkill("splash", stats, pfOrbWater, UtilsClass.GetMousePosition2D());
         }
         if (spell.name == "earth")
         {
-            return new CastOrb("rock", stats, pfOrbEarth, UtilsClass.GetMousePosition2D(), 1f);
+            return new RangedSkill("rock", stats, pfOrbEarth, UtilsClass.GetMousePosition2D());
         }
         throw new Exception("skill not found");
     }
@@ -251,24 +251,25 @@ public class SpelRuntime : MonoBehaviour
     private ICastSpell CreateSkillModified(JObject obj, ICastSpell spell)
     {
         var skillName = (string)obj["name"];
-        if (spell is CastElement)
+        if (spell is Spells.ElementSkill)
         {
             if (skillName == "orb")
             {
-                return CreateOrbSkill((CastElement)spell);
+                return CreateRangedSkill((Spells.ElementSkill)spell);
             }
         }
-        else if (spell is CastOrb)
+        else if (spell is RangedSkill)
         {
-            var casted = (CastOrb)spell;
-            if (skillName == "growth")
-            {
-                return new CastOrbLarger(casted);
-            }
-            else if (skillName == "speed")
-            {
-                return new CastOrbFaster(casted);
-            }
+            var casted = (RangedSkill)spell;
+            //if (skillName == "growth")
+            //{
+            //    return new CastOrbLarger(casted);
+            //}
+            //else if (skillName == "speed")
+            //{
+            //    return new CastOrbFaster(casted);
+            //}
+            unimplemented();
         }
         else
         {
@@ -384,7 +385,7 @@ public class SpelRuntime : MonoBehaviour
             stats.castCounter++;
             yield return new WaitForSeconds(0.5f);
             spell.cast();
-            spell.applyConsequences(stats);
+            spell.applyOnCast(stats);
         }
         yield break;
     }

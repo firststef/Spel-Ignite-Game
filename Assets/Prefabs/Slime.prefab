@@ -246,6 +246,7 @@ MonoBehaviour:
   maxMP: 10
   recoveryMP: 0.5
   recoverMPTime: 30
+  damage: 3
   maxSpeed: 2
   spellOffset: 0.8
   castCounter: 0
@@ -267,6 +268,7 @@ MonoBehaviour:
   onRemoveEffect:
     m_PersistentCalls:
       m_Calls: []
+  allegiance: 1
 --- !u!114 &6927817259411501298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,7 +286,9 @@ MonoBehaviour:
   projectile: {fileID: 0}
   cooldown: 5
   projectileSpeed: 3
+  projectileDamage: 1
   goldPrefab: {fileID: 1232510664461254067, guid: 9ef53951bbc573e4bb7706b7484f8729, type: 3}
+  morph: {fileID: 0}
 --- !u!50 &7094406028601985821
 Rigidbody2D:
   serializedVersion: 4

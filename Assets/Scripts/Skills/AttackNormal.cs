@@ -3,7 +3,6 @@ using UnityEngine;
 public class AttackNormal : MonoBehaviour
 {
     private StatsController st;
-    public float damage = 1f;
 
     private void Awake()
     {
@@ -20,7 +19,7 @@ public class AttackNormal : MonoBehaviour
         var stats = collision.gameObject.GetComponentInParent<StatsController>();
         if (stats && st.allegiance != stats.allegiance && st.GetInstanceID() != stats.GetInstanceID())
         {
-            stats.Damage(damage);
+            stats.Damage(st.GetDamage());
         }
     }
 }

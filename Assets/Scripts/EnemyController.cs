@@ -34,6 +34,9 @@ public class EnemyController : MonoBehaviour
     private NavMeshAgent ag;
     private Transform target;
 
+    [Header("Witch")]
+    public GameObject morph;
+
     private void Awake()
     {
         player = GameObject.Find("Player").GetComponent<Transform>();
@@ -55,9 +58,21 @@ public class EnemyController : MonoBehaviour
     {
         if (type == AttackType.Ranged && wasAttacking && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
         {
-            var orb = new CastOrb("projectile", stats, projectile, player.position, projectileDamage);
-            orb.moveSpeed = projectileSpeed;
-            orb.cast();
+            // todo add spellruntime to enemies
+            if (!gameObject.name.StartsWith("Witch"))
+            {
+                var ranged = new RangedSkill("projectile", stats, projectile, player.position);
+                ranged.damage = projectileDamage;
+                ranged.moveSpeed = projectileSpeed;
+                ranged.cast();
+            }
+            else
+            {
+                var skill = new MorphSkill("morph", stats, projectile, player.position, morph);
+                skill.damage = projectileDamage;
+                skill.moveSpeed = projectileSpeed;
+                skill.cast();
+            }
         }
         wasAttacking = animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
 

@@ -674,6 +674,9 @@ TextureImporter:
   - first:
       213: -1886627757814150333
     second: RPG_Icon_Set_x1_223
+  - first:
+      213: 6995615535723350941
+    second: RPG_Icon_Set_x1_224
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -5146,8 +5149,8 @@ TextureImporter:
       name: RPG_Icon_Set_x1_208
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
+        x: 36
+        y: 36
         width: 18
         height: 18
       alignment: 0
@@ -5167,7 +5170,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_209
       rect:
         serializedVersion: 2
-        x: 18
+        x: 0
         y: 0
         width: 18
         height: 18
@@ -5188,7 +5191,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_210
       rect:
         serializedVersion: 2
-        x: 36
+        x: 18
         y: 0
         width: 18
         height: 18
@@ -5209,7 +5212,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_211
       rect:
         serializedVersion: 2
-        x: 54
+        x: 36
         y: 0
         width: 18
         height: 18
@@ -5230,7 +5233,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_212
       rect:
         serializedVersion: 2
-        x: 72
+        x: 54
         y: 0
         width: 18
         height: 18
@@ -5251,7 +5254,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_213
       rect:
         serializedVersion: 2
-        x: 90
+        x: 72
         y: 0
         width: 18
         height: 18
@@ -5272,7 +5275,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_214
       rect:
         serializedVersion: 2
-        x: 108
+        x: 90
         y: 0
         width: 18
         height: 18
@@ -5293,7 +5296,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_215
       rect:
         serializedVersion: 2
-        x: 126
+        x: 108
         y: 0
         width: 18
         height: 18
@@ -5314,7 +5317,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_216
       rect:
         serializedVersion: 2
-        x: 144
+        x: 126
         y: 0
         width: 18
         height: 18
@@ -5335,7 +5338,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_217
       rect:
         serializedVersion: 2
-        x: 162
+        x: 144
         y: 0
         width: 18
         height: 18
@@ -5356,7 +5359,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_218
       rect:
         serializedVersion: 2
-        x: 180
+        x: 162
         y: 0
         width: 18
         height: 18
@@ -5377,7 +5380,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_219
       rect:
         serializedVersion: 2
-        x: 198
+        x: 180
         y: 0
         width: 18
         height: 18
@@ -5398,7 +5401,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_220
       rect:
         serializedVersion: 2
-        x: 216
+        x: 198
         y: 0
         width: 18
         height: 18
@@ -5419,7 +5422,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_221
       rect:
         serializedVersion: 2
-        x: 234
+        x: 216
         y: 0
         width: 18
         height: 18
@@ -5440,7 +5443,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_222
       rect:
         serializedVersion: 2
-        x: 252
+        x: 234
         y: 0
         width: 18
         height: 18
@@ -5461,7 +5464,7 @@ TextureImporter:
       name: RPG_Icon_Set_x1_223
       rect:
         serializedVersion: 2
-        x: 270
+        x: 252
         y: 0
         width: 18
         height: 18
@@ -5474,6 +5477,27 @@ TextureImporter:
       bones: []
       spriteID: 34b8810dc0a51d5e0800000000000000
       internalID: -1886627757814150333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: RPG_Icon_Set_x1_224
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 0
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9b8effe34b651160800000000000000
+      internalID: 6995615535723350941
       vertices: []
       indices: 
       edges: []

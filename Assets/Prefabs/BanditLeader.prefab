@@ -76,7 +76,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79006f30a0d20ff4d98e88db0fc89304, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 4
 --- !u!50 &1129883798291676183
 Rigidbody2D:
   serializedVersion: 4
@@ -348,6 +347,7 @@ MonoBehaviour:
   maxMP: 10
   recoveryMP: 0.5
   recoverMPTime: 30
+  damage: 4
   maxSpeed: 3
   spellOffset: 0.8
   castCounter: 0
@@ -389,6 +389,7 @@ MonoBehaviour:
   projectileSpeed: 3
   projectileDamage: 1
   goldPrefab: {fileID: 1232510664461254067, guid: 9ef53951bbc573e4bb7706b7484f8729, type: 3}
+  morph: {fileID: 0}
 --- !u!50 &6358746284181191509
 Rigidbody2D:
   serializedVersion: 4

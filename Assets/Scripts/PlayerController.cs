@@ -442,6 +442,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Effects")]
     public GameObject[] prefabs;
+    public GameObject ownPrefab;
 
     public void AddEffect(string effect)
     {

@@ -21,6 +21,9 @@ public class StatsController : MonoBehaviour
     public float recoverMPTime = 30f;
     private float elapsedMP = 0f;
 
+    public float maxDamage = 1f;
+    private float damage;
+
     public float maxSpeed = 1f;
     private float currentSpeed;
 
@@ -59,11 +62,18 @@ public class StatsController : MonoBehaviour
     }
     public Allegiance allegiance = Allegiance.Evil;
 
+    private Animator anim;
+    private RuntimeAnimatorController originalController;
+
     private void Awake()
     {
         currentHP = maxHP;
         currentMP = maxMP;
+        damage = maxDamage;
         currentSpeed = maxSpeed;
+
+        anim = GetComponentInChildren<Animator>();
+        originalController = anim.runtimeAnimatorController;
     }
 
     private void Update()
@@ -173,6 +183,11 @@ public class StatsController : MonoBehaviour
         return currentMP;
     }
 
+    public float GetDamage()
+    {
+        return damage;
+    }
+
     public float GetSpeed()
     {
         return currentSpeed;
@@ -199,6 +214,11 @@ public class StatsController : MonoBehaviour
         if (!wasPresent)
         {
             onAddEffect.Invoke(effect);
+
+            if (effect == "morphed")
+            {
+                damage = 1;
+            }
         }
     }
 
@@ -207,6 +227,13 @@ public class StatsController : MonoBehaviour
         if (effects.Contains(effect))
         {
             effects.Remove(effect);
+
+            if (effect == "morphed")
+            {
+                anim.runtimeAnimatorController = originalController;
+                damage = maxDamage;
+            }
+
             onRemoveEffect.Invoke(effect);
         }
     }

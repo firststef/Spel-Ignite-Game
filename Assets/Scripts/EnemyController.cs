@@ -22,6 +22,8 @@ public class EnemyController : MonoBehaviour
     public float cooldown = 5f;
     private float timeSinceLast = 0;
     private bool wasAttacking = false;
+    public float projectileSpeed = 3f;
+    public float projectileDamage = 1f;
 
     [Header("Setup")]
     private Transform player;
@@ -53,17 +55,18 @@ public class EnemyController : MonoBehaviour
     {
         if (type == AttackType.Ranged && wasAttacking && !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
         {
-            new CastOrb("projectile", stats, projectile, player.position).cast();
+            var orb = new CastOrb("projectile", stats, projectile, player.position, projectileDamage);
+            orb.moveSpeed = projectileSpeed;
+            orb.cast();
         }
         wasAttacking = animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
 
         // Movement
-        transform.position = new Vector3(transform.position.x, transform.position.y, -1);
         if (Vector3.Distance(transform.position, target.position) < findRange)
         {
             if (type != AttackType.Ranged || !animator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
             {
-                ag.SetDestination(new Vector3(target.position.x, target.position.y, -1));
+                ag.SetDestination(new Vector3(target.position.x, target.position.y, transform.position.z));
                 ag.speed = stats.GetSpeed();
             }
             else
@@ -101,6 +104,10 @@ public class EnemyController : MonoBehaviour
             {
                 animator.SetBool("Attacking", isClose);
             }
+        }
+        else if (type == AttackType.Melee)
+        {
+            animator.SetBool("Attacking", false);
         }
 
         animator.SetBool("Moving", ag.velocity.x != 0 || ag.velocity.y != 0);

@@ -235,15 +235,15 @@ public class SpelRuntime : MonoBehaviour
     {
         if (spell.name == "fire")
         {
-            return new CastOrb("flames", stats, pfOrbFire, UtilsClass.GetMousePosition2D());
+            return new CastOrb("flames", stats, pfOrbFire, UtilsClass.GetMousePosition2D(), 1f);
         }
         if (spell.name == "water")
         {
-            return new CastOrb("splash", stats, pfOrbWater, UtilsClass.GetMousePosition2D());
+            return new CastOrb("splash", stats, pfOrbWater, UtilsClass.GetMousePosition2D(), 1f);
         }
         if (spell.name == "earth")
         {
-            return new CastOrb("rock", stats, pfOrbEarth, UtilsClass.GetMousePosition2D());
+            return new CastOrb("rock", stats, pfOrbEarth, UtilsClass.GetMousePosition2D(), 1f);
         }
         throw new Exception("skill not found");
     }

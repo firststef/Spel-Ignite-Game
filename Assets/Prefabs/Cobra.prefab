@@ -75,6 +75,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79006f30a0d20ff4d98e88db0fc89304, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 2
 --- !u!50 &3029240116331555581
 Rigidbody2D:
   serializedVersion: 4
@@ -472,7 +473,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9050806488244596154}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -39.44213, y: -13.96542, z: 173.9225}
+  m_LocalPosition: {x: -39.44213, y: -13.96542, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 9050806487265219591}
@@ -515,13 +516,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9edf1f0bd87a52049b75fcbddcf04aa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 10
+  maxHP: 6
   recoveryHP: 0
   recoverHPTime: 60
   maxMP: 10
   recoveryMP: 0.5
   recoverMPTime: 30
-  maxSpeed: 3
+  maxSpeed: 6
+  spellOffset: 0.8
+  castCounter: 0
+  endSpell:
+    m_PersistentCalls:
+      m_Calls: []
   mpChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -537,6 +543,7 @@ MonoBehaviour:
   onRemoveEffect:
     m_PersistentCalls:
       m_Calls: []
+  allegiance: 1
 --- !u!114 &9050806488244596156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -549,7 +556,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c60322f3293dad4983b7ae3ef016caf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  type: 0
+  hitRange: 1.5
+  projectile: {fileID: 0}
+  cooldown: 5
+  projectileSpeed: 3
+  projectileDamage: 1
   goldPrefab: {fileID: 1232510664461254067, guid: 9ef53951bbc573e4bb7706b7484f8729, type: 3}
 --- !u!50 &9050806488244596159
 Rigidbody2D:

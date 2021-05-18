@@ -38,6 +38,7 @@ namespace Spells
         public GameObject prefab;
 
         public float moveSpeed = 3f;
+        public float damage = 1f;
         public Vector3 scale;
         public Vector3 whereTo;
 
@@ -46,12 +47,13 @@ namespace Spells
         { 
         }
 
-        public CastOrb(string name, StatsController caster, GameObject prefab, Vector3 whereTo)
+        public CastOrb(string name, StatsController caster, GameObject prefab, Vector3 whereTo, float damage)
             :base(name)
         {
             this.caster = caster;
             this.prefab = prefab;
             this.whereTo = whereTo;
+            this.damage = damage;
             scale = prefab.transform.localScale;
         }
 
@@ -122,7 +124,7 @@ namespace Spells
     {
         private GameObject prefab;
         private StatsController stats;
-
+        public float damage = 1f;
         public CastElement(string name) 
             :base(name)
         {

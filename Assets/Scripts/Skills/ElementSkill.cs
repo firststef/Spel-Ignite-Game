@@ -5,7 +5,7 @@ using Utils;
 public class ElementSkill : MonoBehaviour
 {
     CastElement spell;
-    StatsController stats;
+    StatsController st;
     float sustainManaCost = 2;
     float lastConsumeTime = 0;
     float timeTillConsume = 3f;
@@ -13,7 +13,7 @@ public class ElementSkill : MonoBehaviour
     public void Setup(StatsController stats, CastElement spell)
     {
         this.spell = spell;
-        this.stats = stats;
+        st = stats;
         stats.endSpell.AddListener(Die);
     }
 
@@ -30,8 +30,8 @@ public class ElementSkill : MonoBehaviour
         if (lastConsumeTime > timeTillConsume)
         {
             lastConsumeTime = 0;
-            stats.ConsumeMana(sustainManaCost);
-            if (stats.GetMP() < 0)
+            st.ConsumeMana(sustainManaCost);
+            if (st.GetMP() < 0)
             {
                 Die();
             }
@@ -42,7 +42,7 @@ public class ElementSkill : MonoBehaviour
 
     private void Die()
     {
-        stats.castCounter--;
+        st.castCounter--;
         Destroy(gameObject);
     }
 
@@ -54,9 +54,9 @@ public class ElementSkill : MonoBehaviour
         }
 
         var stats = other.GetComponentInParent<StatsController>();
-        if (stats)
+        if (stats && st.allegiance != stats.allegiance && st.GetInstanceID() != stats.GetInstanceID())
         {
-            stats.Damage(1); // todo handled more correctly by watching skill type 
+            stats.Damage(spell.damage); // todo handled more correctly by watching skill type 
         }
     }
 }

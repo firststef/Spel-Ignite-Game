@@ -52,6 +52,13 @@ public class StatsController : MonoBehaviour
     [HideInInspector]
     public UnityEvent<string> onRemoveEffect;
 
+    public enum Allegiance
+    {
+        Good,
+        Evil
+    }
+    public Allegiance allegiance = Allegiance.Evil;
+
     private void Awake()
     {
         currentHP = maxHP;
@@ -131,9 +138,9 @@ public class StatsController : MonoBehaviour
     {
         isInvincible = true;
         float totalTime = 0;
-        while (totalTime < 100f)
+        while (totalTime < 63f)
         {
-            if ((int)(totalTime / 30f) % 2 == 0)
+            if ((int)(totalTime / 20f) % 2 == 0)
             {
                 GetComponentInChildren<Renderer>().material.SetFloat("_FlashAmount", 0.8f);
             }
@@ -142,10 +149,11 @@ public class StatsController : MonoBehaviour
                 GetComponentInChildren<Renderer>().material.SetFloat("_FlashAmount", 0);
             }
 
-            totalTime += 31f;
-            yield return new WaitForSeconds(0.31f);
+            totalTime += 21f;
+            yield return new WaitForSeconds(0.21f);
         }
         isInvincible = false;
+        GetComponentInChildren<Renderer>().material.SetFloat("_FlashAmount", 0);
     }
 
     public void AddMana(float mana)

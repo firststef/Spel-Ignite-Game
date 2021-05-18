@@ -6,9 +6,9 @@ public class Projectile : MonoBehaviour
 {
     private Vector3 direction;
     private float moveSpeed = 0;
-    private ICastSpell spell;
+    private CastOrb spell;
 
-    public void Setup(Vector3 direction, float moveSpeed, ICastSpell spell)
+    public void Setup(Vector3 direction, float moveSpeed, CastOrb spell)
     {
         this.direction = direction;
         this.moveSpeed = moveSpeed;
@@ -30,9 +30,9 @@ public class Projectile : MonoBehaviour
         }
 
         var stats = collision.gameObject.GetComponentInParent<StatsController>();
-        if (stats)
+        if (stats && spell.caster.allegiance != stats.allegiance && spell.caster.GetInstanceID() != stats.GetInstanceID())
         {
-            stats.Damage(1); // todo handled more correctly by watching skill type 
+            stats.Damage(spell.damage); // todo handled more correctly by watching skill type 
             Destroy(gameObject);
         }
     }

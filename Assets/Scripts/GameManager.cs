@@ -9,17 +9,24 @@ public class GameManager : MonoBehaviour
     private PlayerController pc;
     private Animator transition;
     private PauseControl pause;
-    private CinemachineConfiner cinema;
+    private GameObject persist;
 
     private void Awake()
     {
+        if (GameObject.Find("GlobalPersistence"))
+        {
+            Destroy(GameObject.Find("Persistence"));
+            return;
+        }
+
         pc = GameObject.Find("Player").GetComponent<PlayerController>();
         ui = GameObject.Find("UI");
-        cinema = GameObject.Find("Cinemachine").GetComponent<CinemachineConfiner>();
         transition = GameObject.Find("Transition").GetComponent<Animator>();
         pause = GetComponent<PauseControl>();
+        persist = GameObject.Find("Persistence");
 
-        DontDestroyOnLoad(transform.parent.gameObject);
+        persist.name = "GlobalPersistence";
+        pc.transform.position = GameObject.Find("PlayerStart").transform.position;
     }
 
     public void GoToScene(int sceneIndex)
@@ -32,10 +39,16 @@ public class GameManager : MonoBehaviour
         pause.StopTime(true);
         transition.SetTrigger("Exit");
         yield return new WaitForSecondsRealtime(1f);
+
+        DontDestroyOnLoad(persist);
         SceneManager.LoadScene(sceneIndex);
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSecondsRealtime(0.5f);
+        SceneManager.MoveGameObjectToScene(persist, SceneManager.GetActiveScene());
+
         pc.transform.position = GameObject.Find("PlayerStart").transform.position;
-        cinema.m_BoundingShape2D = GameObject.Find("Map").GetComponent<PolygonCollider2D>();
+        var cinema = GameObject.Find("Cinemachine").GetComponent<CinemachineVirtualCamera>();
+        cinema.Follow = pc.transform;
+
         transition.SetTrigger("Enter");
         pause.StopTime(false);
     }

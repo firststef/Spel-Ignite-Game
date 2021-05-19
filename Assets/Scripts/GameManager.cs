@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     private Animator transition;
     private PauseControl pause;
     private GameObject persist;
+    public GameObject shop;
+    private int shopIndex = 0;
 
     private void Awake()
     {
@@ -51,5 +53,65 @@ public class GameManager : MonoBehaviour
 
         transition.SetTrigger("Enter");
         pause.StopTime(false);
+    }
+
+    public void OpenShop()
+    {
+        shop.SetActive(true);
+    }
+
+    public void ShopPrev()
+    {
+        var items = shop.transform.Find("Items");
+        var count = items.childCount;
+        shopIndex--;
+        if (count != 0)
+        {
+            shopIndex = shopIndex % count;
+            for (int i = 0; i < count; i++)
+            {
+                items.GetChild(i).gameObject.SetActive(i == shopIndex);
+            }
+        }
+        else
+        {
+            shopIndex = 0;
+        }
+    }
+
+    public void ShopNext()
+    {
+        var items = shop.transform.Find("Items");
+        var count = items.childCount;
+        shopIndex++;
+        if (count != 0)
+        {
+            shopIndex = shopIndex % count;
+            for (int i = 0; i < count; i++)
+            {
+                items.GetChild(i).gameObject.SetActive(i == shopIndex);
+            }
+        }
+        else
+        {
+            shopIndex = 0;
+        }
+    }
+
+    public void ShopExit()
+    {
+        shop.SetActive(false);
+    }
+
+    public void Buy(ShopItem item)
+    {
+        if (pc.GetGold() >= item.price)
+        {
+            pc.ChangeGold(-item.price);
+            pc.inventory.Remove(item.consume);
+            pc.inventory.AddRange(item.receive);
+            Destroy(item.gameObject);
+            ShopPrev();
+        }
     }
 }

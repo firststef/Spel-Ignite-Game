@@ -249,7 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHP: 20
-  recoveryHP: 0
+  recoveryHP: 3
   recoverHPTime: 60
   maxMP: 100
   recoveryMP: 1

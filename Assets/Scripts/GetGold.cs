@@ -9,7 +9,7 @@ public class GetGold : MonoBehaviour
         var pc = collision.gameObject.GetComponent<PlayerController>();
         if (pc)
         {
-            pc.AddGold(1);
+            pc.ChangeGold(1);
             Destroy(gameObject);
         }
     }

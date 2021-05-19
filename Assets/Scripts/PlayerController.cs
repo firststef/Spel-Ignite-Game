@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 lastMousePos;
     private bool isCasting = false;
 
-    private int gold = 0;
+    private int gold = 5;
 
     /* Generic functions */
 
@@ -220,7 +220,7 @@ public class PlayerController : MonoBehaviour
 
         sendSkill = "{'block':{'items':[{'which':'statement','statement':{'element':'fire','type':'ChargeStatement'},'type':'BlockItem'},{'which':'statement','statement':{'value':'releaseFromHand','type':'AnyStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
         sendSkill = "{    'block': {        'items': [            {                'which': 'statement',                'statement': {                    'object': {                        'name': 'orb',                        'type': 'NamedExpression'                    },                    'holder': 'lefthand',                    'type': 'CreateStatement'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'expr': {                        'name': 'orb',                        'type': 'NamedExpression'                    },                    'value': {                        'expr': {                            'name': 'orb',                            'type': 'NamedExpression'                        },                        'value': {                            'name': 'fire',                            'type': 'NamedExpression'                        },                        'type': 'Modification'                    },                    'type': 'Assignment'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'object': 'orb',                    'type': 'ThrowStatement'                },                'type': 'BlockItem'            }        ],        'type': 'Block'    },    'type': 'Document'}".Replace("'", "\"");
-        sendSkill = "{'block':{'items':[{'which':'statement','statement':{'message':'ceva','tone':'say','type':'PrintStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
+        sendSkill = "{'block':{'items':[{'which':'statement','statement':{'message':'ceva','tone':'say','type':'PrintStatement'},'type':'BlockItem'},{'which':'statement','statement':{'message':'shop','tone':'say','type':'PrintStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
 
 #endif
 
@@ -343,10 +343,15 @@ public class PlayerController : MonoBehaviour
         manaBar.GetComponent<Image>().fillAmount = stats.GetMP() / stats.maxMP;
     }
 
-    public void AddGold(int amount)
+    public void ChangeGold(int amount)
     {
         gold += amount;
         goldText.text = gold.ToString();
+    }
+
+    public int GetGold()
+    {
+        return gold;
     }
 
     private void Die()

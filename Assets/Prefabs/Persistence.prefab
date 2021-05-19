@@ -1651,6 +1651,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8886708958527011768, guid: 53d094c40ee9631409c20ea8d6426366, type: 3}
+      propertyPath: inventory.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886708958527011768, guid: 53d094c40ee9631409c20ea8d6426366, type: 3}
+      propertyPath: inventory.Array.data[0]
+      value: say
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886708958527011768, guid: 53d094c40ee9631409c20ea8d6426366, type: 3}
+      propertyPath: inventory.Array.data[1]
+      value: String
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886708958527011768, guid: 53d094c40ee9631409c20ea8d6426366, type: 3}
+      propertyPath: inventory.Array.data[2]
+      value: say
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886708958527011768, guid: 53d094c40ee9631409c20ea8d6426366, type: 3}
+      propertyPath: inventory.Array.data[3]
+      value: String
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886708958527011768, guid: 53d094c40ee9631409c20ea8d6426366, type: 3}
+      propertyPath: inventory.Array.data[4]
+      value: say
+      objectReference: {fileID: 0}
+    - target: {fileID: 8886708958527011768, guid: 53d094c40ee9631409c20ea8d6426366, type: 3}
+      propertyPath: inventory.Array.data[5]
+      value: String
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 53d094c40ee9631409c20ea8d6426366, type: 3}
 --- !u!4 &8265840185119391307 stripped

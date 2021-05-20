@@ -235,6 +235,8 @@ public class PlayerController : MonoBehaviour
         stats.onDeath.AddListener(Die);
         stats.onAddEffect.AddListener(AddEffect);
         stats.onRemoveEffect.AddListener(RemoveEffect);
+
+        SendUpdateInventory();
     }
 
     void Update()

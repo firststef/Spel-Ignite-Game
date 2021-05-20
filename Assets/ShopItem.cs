@@ -7,6 +7,7 @@ public class ShopItem : MonoBehaviour
     public int price;
     public string consume;
     public List<string> receive = new List<string>();
+    public List<string> passives = new List<string>();
 
     private void Awake()
     {

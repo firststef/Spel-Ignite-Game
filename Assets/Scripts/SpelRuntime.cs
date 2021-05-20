@@ -12,6 +12,7 @@ public class SpelRuntime : MonoBehaviour
 {
     private StatsController stats;
     private SpeechController speech;
+    private PlayerController pc;
     public bool vmIsRunning = false;
     public bool cancelling = false;
 
@@ -22,6 +23,7 @@ public class SpelRuntime : MonoBehaviour
         stats = GetComponent<StatsController>();
         speech = stats.GetComponentInChildren<SpeechController>();
         stats.endSpell.AddListener(OnCancel);
+        pc = GetComponent<PlayerController>(); //temp
 
 #if !UNITY_EDITOR && UNITY_WEBGL
         WebGLInput.captureAllKeyboardInput = false;
@@ -329,16 +331,35 @@ public class SpelRuntime : MonoBehaviour
         var type = (string)obj["object"]["type"];
         if (type  == "NamedExpression")
         {
-            foreach (KeyValuePair<string, object> x in storage)
+            var name = (string)obj["object"]["name"];
+            if ((new[] { "rock", "arrow" }).Any(name.Equals))
             {
-                if ((x.Value is Element && x.Value.ToString() == (string)obj["object"]["name"])||
-                     (x.Value is MagicItem && x.Value.ToString() == (string)obj["object"]["name"]))
+                if (pc.inventory.Contains(name))
                 {
                     found = true;
-                    var val = x.Value;
-                    storage.Remove(x.Key);
+                    pc.inventory.Remove(name);
+                    var val = new Item(name);
                     StoreObject(to, val);
-                    break;
+                }
+                else
+                {
+                    SayError($"{name} not in inventory");
+                    yield break;
+                }
+            }
+            else
+            {
+                foreach (KeyValuePair<string, object> x in storage)
+                {
+                    if ((x.Value is Element && x.Value.ToString() == (string)obj["object"]["name"]) ||
+                         (x.Value is MagicItem && x.Value.ToString() == (string)obj["object"]["name"]))
+                    {
+                        found = true;
+                        var val = x.Value;
+                        storage.Remove(x.Key);
+                        StoreObject(to, val);
+                        break;
+                    }
                 }
             }
         }
@@ -368,6 +389,7 @@ public class SpelRuntime : MonoBehaviour
         if (!storage.ContainsKey(holder))
         {
             SayError($"There is nothing in {holder}");
+            yield break;
         }
 
         var rel = storage[holder];
@@ -379,9 +401,9 @@ public class SpelRuntime : MonoBehaviour
                 var skill = CreateElementSkill(rel.ToString());
                 yield return CallSkill(skill);
             }
-            else if (rel is MagicItem)
+            else if (rel is MagicItem || rel is Item)
             {
-                var skill = CreateMagicItemSkill(rel.ToString());
+                var skill = CreateItemSkill(rel.ToString());
                 yield return CallSkill(skill);
             }
             else if (rel is ICastSpell)
@@ -446,11 +468,23 @@ public class SpelRuntime : MonoBehaviour
         }
     }
 
-    private Skill CreateMagicItemSkill(string skillName)
+    private Skill CreateItemSkill(string skillName)
     {
         if (skillName == "orb")
         {
             return new RangedSkill("orb", stats, pfOrb, UtilsClass.GetMousePosition2D());
+        }
+        if (skillName == "rock")
+        {
+            if (!pc.passives.Contains("sharpshooter"))
+            {
+                Error("i don't know how to throw");
+            }
+            return new RangedSkill("orb", stats, pfRock, UtilsClass.GetMousePosition2D());
+        }
+        if (skillName == "arrow")
+        {
+            return new RangedSkill("orb", stats, pfArrow, UtilsClass.GetMousePosition2D());
         }
         else
         {
@@ -559,6 +593,9 @@ public class SpelRuntime : MonoBehaviour
     public GameObject pfOrbFire;
     public GameObject pfOrbEarth;
     public GameObject pfOrbIce;
+
+    public GameObject pfArrow;
+    public GameObject pfRock;
 
     //todo teoretic pot sa scap de corutine daca fac un Update care efectueaza actiuni puse de async-uri
 }

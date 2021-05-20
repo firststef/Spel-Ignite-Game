@@ -69,6 +69,11 @@ public class GameManager : MonoBehaviour
     public void OpenShop()
     {
         shop.SetActive(true);
+        foreach (Transform ch in shop.transform.Find("Items").transform)
+        {
+            ch.gameObject.SetActive(false);
+        }
+        ShopNext();
     }
 
     public void ShopPrev()
@@ -78,6 +83,10 @@ public class GameManager : MonoBehaviour
         shopIndex--;
         if (count != 0)
         {
+            while (shopIndex < 0)
+            {
+                shopIndex += count;
+            }
             shopIndex = shopIndex % count;
             for (int i = 0; i < count; i++)
             {
@@ -119,8 +128,11 @@ public class GameManager : MonoBehaviour
         if (pc.GetGold() >= item.price)
         {
             pc.ChangeGold(-item.price);
-            pc.inventory.Remove(item.consume);
-            pc.inventory.AddRange(item.receive);
+            if (item.consume != "")
+            {
+                pc.inventory.Remove(item.consume);
+            }
+            pc.passives.AddRange(item.passives);
             Destroy(item.gameObject);
             ShopPrev();
         }

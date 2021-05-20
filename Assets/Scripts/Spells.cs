@@ -115,6 +115,21 @@ namespace Spells
         }
     }
 
+    public class Item
+    {
+        public string type;
+
+        public Item(string el)
+        {
+            type = el;
+        }
+
+        public override string ToString()
+        {
+            return type;
+        }
+    }
+
     public class ElementSkill : Skill, ICastSpell
     {
         private GameObject prefab;

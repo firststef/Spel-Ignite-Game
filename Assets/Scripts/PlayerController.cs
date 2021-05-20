@@ -224,7 +224,8 @@ public class PlayerController : MonoBehaviour
         sendSkill = "{'block':{'items':[{'which':'statement','statement':{'object':'orb','holder':'left hand','type':'CreateStatement'},'type':'BlockItem'},{'which':'statement','statement':{'object':'fire','holder':'soul','type':'CreateStatement'},'type':'BlockItem'},{'which':'statement','statement':{'object':{'expr':{'name':'orb','type':'NamedExpression'},'value':{'name':'fire','type':'NamedExpression'},'type':'Modification'},'to':'left hand','type':'MoveStatement'},'type':'BlockItem'},{'which':'statement','statement':{'from':'left hand','type':'ReleaseStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
         // say
         sendSkill = "{'block':{'items':[{'which':'statement','statement':{'message':'ceva','tone':'say','type':'PrintStatement'},'type':'BlockItem'},{'which':'statement','statement':{'message':'shop','tone':'say','type':'PrintStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
-
+        // throw inventory
+        sendSkill = "{'block':{'items':[{'which':'statement','statement':{'object':{'name':'rock','type':'NamedExpression'},'from':'','to':'left hand','type':'MoveStatement'},'type':'BlockItem'},{'which':'statement','statement':{'from':'left hand','type':'ReleaseStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
 #endif
 
         stats.hpChanged.AddListener(RefreshHealthBar);
@@ -365,6 +366,7 @@ public class PlayerController : MonoBehaviour
     /* Collision */
 
     public List<string> inventory = new List<string>(new[] { "cast" });
+    public List<string> passives = new List<string>();
 
     [Serializable]
     struct DataUpdate

@@ -396,7 +396,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void SendUpdateInventory()
+    public void SendUpdateInventory()
     {
         DataUpdate data;
         data.inventory = inventory;

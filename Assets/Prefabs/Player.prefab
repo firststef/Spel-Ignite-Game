@@ -207,12 +207,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   vmIsRunning: 0
   cancelling: 0
-  pfWater: {fileID: 2216376471299587947, guid: 62d408ec84208a345a6701775108a59c, type: 3}
-  pfFire: {fileID: 5489274561295855065, guid: ef5c25a3467e88648b6b0f586e3d859a, type: 3}
-  pfEarth: {fileID: 4132712480966581239, guid: b74838c5a45e4184fa29368aef85c034, type: 3}
-  pfOrbWater: {fileID: 5984432535341274622, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
-  pfOrbFire: {fileID: 7744158000059403965, guid: eaadaba3f67f74f48a2f386a290422c2, type: 3}
-  pfOrbEarth: {fileID: 4764056254635462346, guid: bbea95b59e73a07499c5b6e4cf849e20, type: 3}
+  pfWater: {fileID: 2144419629266293562, guid: 62d408ec84208a345a6701775108a59c, type: 3}
+  pfFire: {fileID: 6883427876004621853, guid: ef5c25a3467e88648b6b0f586e3d859a, type: 3}
+  pfEarth: {fileID: 8560883002568954109, guid: b74838c5a45e4184fa29368aef85c034, type: 3}
+  pfIce: {fileID: 3285830033773499933, guid: 4e387345e9fc6fd4ebfca28bf411dec0, type: 3}
+  pfOrb: {fileID: 6430354788405628664, guid: f8908a13390b2574e86f4915c1311623, type: 3}
+  pfOrbWater: {fileID: 5984432535341274620, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
+  pfOrbFire: {fileID: 7744158000059403967, guid: eaadaba3f67f74f48a2f386a290422c2, type: 3}
+  pfOrbEarth: {fileID: 4764056254635462340, guid: bbea95b59e73a07499c5b6e4cf849e20, type: 3}
+  pfOrbIce: {fileID: 6430354788405628664, guid: f8908a13390b2574e86f4915c1311623, type: 3}
 --- !u!114 &8886708958527011768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,7 +254,7 @@ MonoBehaviour:
   maxHP: 20
   recoveryHP: 3
   recoverHPTime: 60
-  maxMP: 100
+  maxMP: 20
   recoveryMP: 1
   recoverMPTime: 3
   maxDamage: 1

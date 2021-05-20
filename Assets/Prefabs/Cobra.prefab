@@ -521,8 +521,8 @@ MonoBehaviour:
   maxMP: 10
   recoveryMP: 0.5
   recoverMPTime: 30
-  damage: 3
-  maxSpeed: 6
+  maxDamage: 1
+  maxSpeed: 4
   spellOffset: 0.8
   castCounter: 0
   endSpell:
@@ -557,6 +557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+  findRange: 10
   hitRange: 1.5
   projectile: {fileID: 0}
   cooldown: 5

@@ -11,7 +11,7 @@ namespace Spells
         public void applyOnAttack(StatsController stats);
     }
 
-    public class Skill
+    public class Skill: ICastSpell
     {
         public string name;
         public int manaCost = 1;
@@ -26,10 +26,16 @@ namespace Spells
             return stats.GetMP() >= manaCost;
         }
 
+        public void cast()
+        {}
+
         public void applyOnCast(StatsController stats)
         {
             stats.ConsumeMana(manaCost);
         }
+
+        public void applyOnAttack(StatsController stats)
+        {}
     }
 
     public class RangedSkill : Skill, ICastSpell
@@ -56,7 +62,7 @@ namespace Spells
             scale = prefab.transform.localScale;
         }
 
-        public void cast()
+        public new void cast()
         {
             var startPosition = caster.transform.position;
 
@@ -73,9 +79,39 @@ namespace Spells
             caster.castCounter--;
         }
 
-        public virtual void applyOnAttack(StatsController stats)
+        public new virtual void applyOnAttack(StatsController stats)
         {
             stats.Damage(damage);
+        }
+    }
+
+    public class Element
+    {
+        public string type;
+
+        public Element(string el)
+        {
+            type = el;
+        }
+
+        public override string ToString()
+        {
+            return type;
+        }
+    }
+
+    public class MagicItem
+    {
+        public string type;
+
+        public MagicItem(string el)
+        {
+            type = el;
+        }
+
+        public override string ToString()
+        {
+            return type;
         }
     }
 
@@ -96,13 +132,13 @@ namespace Spells
             this.stats = stats;
         }
 
-        public void cast()
+        public new void cast()
         {
             var obj = Object.Instantiate(prefab, stats.transform);
             obj.GetComponent<ElementRelease>().Setup(stats, this);
         }
 
-        public void applyOnAttack(StatsController stats)
+        public new void applyOnAttack(StatsController stats)
         {
             stats.Damage(damage);
         }

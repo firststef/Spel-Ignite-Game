@@ -3,7 +3,16 @@ guid: c1fe4fcb587c0fc4695dbd31d2006490
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - pfWater: {fileID: 2144419629266293562, guid: 62d408ec84208a345a6701775108a59c, type: 3}
+  - pfFire: {fileID: 6883427876004621853, guid: ef5c25a3467e88648b6b0f586e3d859a, type: 3}
+  - pfEarth: {fileID: 8560883002568954109, guid: b74838c5a45e4184fa29368aef85c034, type: 3}
+  - pfIce: {fileID: 3285830033773499933, guid: 4e387345e9fc6fd4ebfca28bf411dec0, type: 3}
+  - pfOrb: {fileID: 6430354788405628664, guid: f8908a13390b2574e86f4915c1311623, type: 3}
+  - pfOrbWater: {fileID: 5984432535341274620, guid: 0e391b45d5bc70e4f8e8dbea9a72528b, type: 3}
+  - pfOrbFire: {fileID: 7744158000059403967, guid: eaadaba3f67f74f48a2f386a290422c2, type: 3}
+  - pfOrbEarth: {fileID: 4764056254635462340, guid: bbea95b59e73a07499c5b6e4cf849e20, type: 3}
+  - pfOrbIce: {fileID: 6430354788405628664, guid: f8908a13390b2574e86f4915c1311623, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

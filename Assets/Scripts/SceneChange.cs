@@ -17,6 +17,6 @@ public class SceneChange : MonoBehaviour
             return;
         }
 
-        manager.GoToScene(nextScene);
+        manager.GoToScene(nextScene, transform.Find("ReturnTo").position);
     }
 }

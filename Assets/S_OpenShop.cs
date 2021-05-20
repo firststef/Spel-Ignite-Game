@@ -13,9 +13,9 @@ public class S_OpenShop : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.GetComponent<PlayerController>())
+        if (collider.GetComponent<PlayerController>() && speech.currentLine == "")
         {
-            speech.Speak("Thanks!");
+            speech.Speak("Hi!");
             speech.Speak("You should check out my shop!");
             speech.Speak("Just let me know, like saying `shop`");
         }

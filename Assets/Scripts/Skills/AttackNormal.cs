@@ -9,6 +9,11 @@ public class AttackNormal : MonoBehaviour
         st = GetComponentInParent<StatsController>();
     }
 
+    private void Update()
+    {
+        transform.localPosition = new Vector3(0, 0, 0);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag != "Hurtbox")

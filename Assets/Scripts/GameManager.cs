@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Cinemachine;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class GameManager : MonoBehaviour
     private GameObject persist;
     public GameObject shop;
     private int shopIndex = 0;
+    private Dictionary<int, Vector3> lastPlayerPos = new Dictionary<int, Vector3>();
 
     private void Awake()
     {
@@ -31,13 +33,15 @@ public class GameManager : MonoBehaviour
         pc.transform.position = GameObject.Find("PlayerStart").transform.position;
     }
 
-    public void GoToScene(int sceneIndex)
+    public void GoToScene(int sceneIndex, Vector3 returnTo)
     {
-        StartCoroutine(SceneCoroutine(sceneIndex));
+        StartCoroutine(SceneCoroutine(sceneIndex, returnTo));
     }
 
-    public IEnumerator SceneCoroutine(int sceneIndex)
+    public IEnumerator SceneCoroutine(int sceneIndex, Vector3 returnTo)
     {
+        lastPlayerPos[SceneManager.GetActiveScene().buildIndex] = returnTo;
+
         pause.StopTime(true);
         transition.SetTrigger("Exit");
         yield return new WaitForSecondsRealtime(1f);
@@ -47,7 +51,14 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.5f);
         SceneManager.MoveGameObjectToScene(persist, SceneManager.GetActiveScene());
 
-        pc.transform.position = GameObject.Find("PlayerStart").transform.position;
+        if (!lastPlayerPos.ContainsKey(sceneIndex))
+        {
+            pc.transform.position = GameObject.Find("PlayerStart").transform.position;
+        }
+        else
+        {
+            pc.transform.position = lastPlayerPos[sceneIndex];
+        }
         var cinema = GameObject.Find("Cinemachine").GetComponent<CinemachineVirtualCamera>();
         cinema.Follow = pc.transform;
 

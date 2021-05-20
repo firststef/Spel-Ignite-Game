@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 lastMousePos;
     private bool isCasting = false;
 
-    private int gold = 5;
+    private int gold = 0;
 
     /* Generic functions */
 

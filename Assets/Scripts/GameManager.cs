@@ -127,11 +127,15 @@ public class GameManager : MonoBehaviour
     {
         if (pc.GetGold() >= item.price)
         {
-            pc.ChangeGold(-item.price);
             if (item.consume != "")
             {
+                if (!pc.inventory.Contains(item.consume))
+                {
+                    return;
+                }
                 pc.inventory.Remove(item.consume);
             }
+            pc.ChangeGold(-item.price);
             pc.passives.AddRange(item.passives);
             Destroy(item.gameObject);
             ShopPrev();

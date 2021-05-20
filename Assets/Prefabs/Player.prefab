@@ -216,6 +216,8 @@ MonoBehaviour:
   pfOrbFire: {fileID: 7744158000059403967, guid: eaadaba3f67f74f48a2f386a290422c2, type: 3}
   pfOrbEarth: {fileID: 4764056254635462340, guid: bbea95b59e73a07499c5b6e4cf849e20, type: 3}
   pfOrbIce: {fileID: 6430354788405628664, guid: f8908a13390b2574e86f4915c1311623, type: 3}
+  pfArrow: {fileID: 2083273492770020836, guid: ab06cb28e7e907e418653ca3eba13a20, type: 3}
+  pfRock: {fileID: 9193062466046092261, guid: 5023a71b3a0f696409b6403a4f81f61a, type: 3}
 --- !u!114 &8886708958527011768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,6 +233,7 @@ MonoBehaviour:
   sendSkill: 
   inventory:
   - cast
+  passives: []
   prefabs:
   - {fileID: 2923489165225063785, guid: 45d9b30b8aa6cf04a8565a8619395888, type: 3}
   - {fileID: 4223535094891393883, guid: 3c9bfeea4a0931840b6ba9b145554345, type: 3}

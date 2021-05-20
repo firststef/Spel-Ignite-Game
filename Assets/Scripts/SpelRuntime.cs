@@ -269,7 +269,20 @@ public class SpelRuntime : MonoBehaviour
         validate(obj, "message");
         validate(obj, "tone");
 
-        speech.Speak((string)obj["message"]);
+        var msg = (string)obj["message"];
+        var isChant = false;
+        switch (msg)
+        {
+            case "lord of daybreak, release thy flames":
+                isChant = true;
+                stats.AddEffect("fire_charged", null, 5f, () => stats.ClearEffect("fire_charged"));
+                break;
+        }
+        if (isChant)
+        {
+            msg = "<color=blue>" + msg + "</color>";
+        }
+        speech.Speak(msg);
         yield return new WaitForSeconds(0.05f);
     }
 
@@ -419,7 +432,14 @@ public class SpelRuntime : MonoBehaviour
         {
             if (rel is Element)
             {
-                // if water make healing spell
+                if (rel.ToString() == "water")
+                {
+                    stats.AddLife(1);
+                }
+                else
+                {
+                    SayError($"this element cannot be naturally released by humans");
+                }
             }
         }
 

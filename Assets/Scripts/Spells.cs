@@ -31,6 +31,10 @@ namespace Spells
 
         public void applyOnCast(StatsController stats)
         {
+            if ((name == "fire" || name == "flames") && stats.effects.Contains("fire_charged"))
+            {
+                return;
+            }
             stats.ConsumeMana(manaCost);
         }
 

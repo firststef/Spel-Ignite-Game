@@ -30,10 +30,13 @@ public class ElementRelease : MonoBehaviour
         if (lastConsumeTime > timeTillConsume)
         {
             lastConsumeTime = 0;
-            st.ConsumeMana(sustainManaCost);
-            if (st.GetMP() < 0)
+            if ((name != "fire" && name != "flames") && !st.effects.Contains("fire_charged"))
             {
-                Die();
+                st.ConsumeMana(sustainManaCost);
+                if (st.GetMP() < 0)
+                {
+                    Die();
+                }
             }
         }
 

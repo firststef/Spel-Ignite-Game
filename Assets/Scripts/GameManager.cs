@@ -7,12 +7,13 @@ using System.Collections.Generic;
 public class GameManager : MonoBehaviour
 {
     private GameObject ui;
-    private PlayerController pc;
+    [HideInInspector]
+    public PlayerController pc;
     private Animator transition;
     private PauseControl pause;
     private GameObject persist;
     public GameObject shop;
-    private int shopIndex = 0;
+    private int shopIndex = -1;
     private Dictionary<int, Vector3> lastPlayerPos = new Dictionary<int, Vector3>();
 
     private void Awake()
@@ -136,6 +137,7 @@ public class GameManager : MonoBehaviour
                 pc.inventory.Remove(item.consume);
             }
             pc.ChangeGold(-item.price);
+            pc.inventory.AddRange(item.receive);
             pc.passives.AddRange(item.passives);
             Destroy(item.gameObject);
             ShopPrev();

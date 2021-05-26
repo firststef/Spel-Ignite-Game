@@ -85,7 +85,7 @@ namespace Spells
 
         public new virtual void applyOnAttack(StatsController stats)
         {
-            stats.Damage(damage);
+            stats.Damage(damage, name);
         }
     }
 
@@ -159,7 +159,7 @@ namespace Spells
 
         public new void applyOnAttack(StatsController stats)
         {
-            stats.Damage(damage);
+            stats.Damage(damage, name);
         }
     }
 
@@ -178,7 +178,7 @@ namespace Spells
             var anim = stats.GetComponentInChildren<Animator>();
             anim.runtimeAnimatorController = this.morph.GetComponentInChildren<Animator>().runtimeAnimatorController;
             stats.AddEffect("morphed", null, 20f, () => stats.ClearEffect("morphed"));
-            stats.Damage(damage);
+            stats.Damage(damage, name);
         }
     }
 }

@@ -410,7 +410,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9edf1f0bd87a52049b75fcbddcf04aa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 3
+  maxHP: 9
   recoveryHP: 0
   recoverHPTime: 60
   maxMP: 10
@@ -439,6 +439,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   allegiance: 1
+  weakAgainst:
+  - Attack
 --- !u!114 &8270476883301539690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -452,6 +454,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+  findRange: 10
   hitRange: 1.5
   projectile: {fileID: 3719450322539864022, guid: 975fc4496f4decd4298708f296bc110d, type: 3}
   cooldown: 2

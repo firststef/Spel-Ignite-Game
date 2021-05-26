@@ -16,6 +16,11 @@ public class SceneChange : MonoBehaviour
         {
             return;
         }
+        if (GameObject.Find("Enemies").transform.childCount != 0)
+        {
+            manager.pc.GetComponent<SpeechController>().Speak("I have to kill every enemy");
+            return;
+        }
 
         manager.GoToScene(nextScene, transform.Find("ReturnTo").position);
     }

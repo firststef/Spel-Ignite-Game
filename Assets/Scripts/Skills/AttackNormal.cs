@@ -24,7 +24,7 @@ public class AttackNormal : MonoBehaviour
         var stats = collision.gameObject.GetComponentInParent<StatsController>();
         if (stats && st.allegiance != stats.allegiance && st.GetInstanceID() != stats.GetInstanceID())
         {
-            stats.Damage(st.GetDamage());
+            stats.Damage(st.GetDamage(), "Attack");
         }
     }
 }

@@ -418,12 +418,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9edf1f0bd87a52049b75fcbddcf04aa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 3
+  maxHP: 9
   recoveryHP: 0
   recoverHPTime: 60
   maxMP: 10
   recoveryMP: 0.5
   recoverMPTime: 30
+  maxDamage: 1
   maxSpeed: 5
   spellOffset: 0.8
   castCounter: 0
@@ -446,6 +447,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   allegiance: 1
+  weakAgainst:
+  - flames
 --- !u!114 &7023229823015508048
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -459,12 +462,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
+  findRange: 10
   hitRange: 1.5
   projectile: {fileID: 3719450322539864022, guid: 975fc4496f4decd4298708f296bc110d, type: 3}
   cooldown: 2
   projectileSpeed: 3
   projectileDamage: 1
   goldPrefab: {fileID: 1232510664461254067, guid: 9ef53951bbc573e4bb7706b7484f8729, type: 3}
+  morph: {fileID: 0}
 --- !u!50 &7023229823015508051
 Rigidbody2D:
   serializedVersion: 4

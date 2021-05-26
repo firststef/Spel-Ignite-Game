@@ -500,11 +500,11 @@ public class SpelRuntime : MonoBehaviour
             {
                 Error("i don't know how to throw");
             }
-            return new RangedSkill("orb", stats, pfRock, UtilsClass.GetMousePosition2D());
+            return new RangedSkill("rock", stats, pfRock, UtilsClass.GetMousePosition2D());
         }
         if (skillName == "arrow")
         {
-            return new RangedSkill("orb", stats, pfArrow, UtilsClass.GetMousePosition2D());
+            return new RangedSkill("arrow", stats, pfArrow, UtilsClass.GetMousePosition2D());
         }
         else
         {

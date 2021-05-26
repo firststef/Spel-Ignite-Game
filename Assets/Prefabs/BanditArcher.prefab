@@ -425,7 +425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9edf1f0bd87a52049b75fcbddcf04aa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHP: 6
+  maxHP: 18
   recoveryHP: 0
   recoverHPTime: 60
   maxMP: 10
@@ -454,6 +454,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   allegiance: 1
+  weakAgainst:
+  - orb
 --- !u!114 &988767606895778472
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System;
 using System.Collections.Specialized;
+using System.Collections.Generic;
 
 public class StatsController : MonoBehaviour
 {
@@ -65,6 +66,8 @@ public class StatsController : MonoBehaviour
     private Animator anim;
     private RuntimeAnimatorController originalController;
 
+    public List<string> weakAgainst = new List<string>();
+
     private void Awake()
     {
         currentHP = maxHP;
@@ -116,16 +119,19 @@ public class StatsController : MonoBehaviour
         hpChanged.Invoke();
     }
 
-    public void Damage(float amount)
+    public void Damage(float amount, string skillName)
     {
         if (isInvincible)
         {
             return;
         }
 
-        currentHP -= amount;
+        var effective = weakAgainst.Contains(skillName) || amount >= 0.2f * maxHP;
+        var factor = !effective ? 1 : (currentHP / 6 > amount ? 2 : 3);
+        currentHP -= amount * factor;
+
         hpChanged.Invoke();
-        StartCoroutine(Flash());
+        StartCoroutine(Flash(effective));
 
         if (!dead && currentHP <= 0)
         {
@@ -134,36 +140,42 @@ public class StatsController : MonoBehaviour
         }
     }
 
-    public void Hit(ICastSpell spell)
-    {
-        Damage(1); // todo replace depending on spell
-    }
-
     public float GetHP()
     {
         return currentHP;
     }
 
-    public IEnumerator Flash()
+    public IEnumerator Flash(bool effective)
     {
         isInvincible = true;
         float totalTime = 0;
+        var material = GetComponentInChildren<Renderer>().material;
+
+        if (effective)
+        {
+            material.SetColor("_FlashColor", Color.red);
+        }
+        else
+        {
+            material.SetColor("_FlashColor", Color.white);
+        }
+
         while (totalTime < 63f)
         {
             if ((int)(totalTime / 20f) % 2 == 0)
             {
-                GetComponentInChildren<Renderer>().material.SetFloat("_FlashAmount", 0.8f);
+                material.SetFloat("_FlashAmount", 0.8f);
             }
             else
             {
-                GetComponentInChildren<Renderer>().material.SetFloat("_FlashAmount", 0);
+                material.SetFloat("_FlashAmount", 0);
             }
 
             totalTime += 21f;
             yield return new WaitForSeconds(0.21f);
         }
         isInvincible = false;
-        GetComponentInChildren<Renderer>().material.SetFloat("_FlashAmount", 0);
+        material.SetFloat("_FlashAmount", 0);
     }
 
     public void AddMana(float mana)

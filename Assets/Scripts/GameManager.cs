@@ -59,6 +59,11 @@ public class GameManager : MonoBehaviour
         else
         {
             pc.transform.position = lastPlayerPos[sceneIndex];
+            var en = GameObject.Find("Enemies").transform;
+            foreach(Transform tr in en)
+            {
+                Destroy(tr.gameObject);
+            }
         }
         var cinema = GameObject.Find("Cinemachine").GetComponent<CinemachineVirtualCamera>();
         cinema.Follow = pc.transform;

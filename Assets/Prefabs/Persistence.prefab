@@ -1859,6 +1859,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6461092c9d59b8a4c9e67e8de5be5782, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pc: {fileID: 0}
   shop: {fileID: 985811265642088158}
 --- !u!114 &1091550388284363563
 MonoBehaviour:
@@ -2924,6 +2925,8 @@ MonoBehaviour:
   consume: cast
   receive:
   - createElement
+  - leftHand
+  - release
   passives:
   - fire_chant
 --- !u!1 &5015991633986577174
@@ -3538,6 +3541,7 @@ MonoBehaviour:
   receive:
   - create
   - move
+  - soul
   passives: []
 --- !u!1 &7576146433195079305
 GameObject:
@@ -3847,7 +3851,6 @@ MonoBehaviour:
   - fire
   - water
   - earth
-  - wind
   - ice
   passives: []
 --- !u!1 &8944706425606794480

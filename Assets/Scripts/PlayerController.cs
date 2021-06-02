@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     private GenericMovement mov;
     private Rigidbody2D rb;
     private SpelRuntime sr;
+    private GameManager gm;
 
     [Header("Skills")]
     public string sendSkill;
@@ -38,6 +39,7 @@ public class PlayerController : MonoBehaviour
         stats = GetComponent<StatsController>();
         anim = GetComponent<Animator>();
         mov = GetComponent<GenericMovement>();
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
 
         FillUIStuff();
 
@@ -220,14 +222,16 @@ public class PlayerController : MonoBehaviour
 
         // cast fire
         sendSkill = "{    'block': {        'items': [            {                'which': 'statement',                'statement': {                    'object': 'fire',                    'holder': 'soul',                    'type': 'CreateStatement'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'object': {                        'name': 'fire',                        'type': 'NamedExpression'                    },                    'to': 'left hand',                    'type': 'MoveStatement'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'from': 'left hand',                    'type': 'ReleaseStatement'                },                'type': 'BlockItem'            }        ],        'type': 'Block'    },    'type': 'Document'}".Replace("'", "\"");
+        // cast water
+        sendSkill = "{    'block': {        'items': [            {                'which': 'statement',                'statement': {                    'object': 'water',                    'holder': 'soul',                    'type': 'CreateStatement'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'object': {                        'name': 'water',                        'type': 'NamedExpression'                    },                    'to': 'left hand',                    'type': 'MoveStatement'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'from': 'left hand',                    'type': 'ReleaseStatement'                },                'type': 'BlockItem'            }        ],        'type': 'Block'    },    'type': 'Document'}".Replace("'", "\"");
         // cast fire orb
-        // sendSkill = "{'block':{'items':[{'which':'statement','statement':{'object':'orb','holder':'left hand','type':'CreateStatement'},'type':'BlockItem'},{'which':'statement','statement':{'object':'fire','holder':'soul','type':'CreateStatement'},'type':'BlockItem'},{'which':'statement','statement':{'object':{'expr':{'name':'orb','type':'NamedExpression'},'value':{'name':'fire','type':'NamedExpression'},'type':'Modification'},'to':'left hand','type':'MoveStatement'},'type':'BlockItem'},{'which':'statement','statement':{'from':'left hand','type':'ReleaseStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
+        sendSkill = "{'block':{'items':[{'which':'statement','statement':{'object':'orb','holder':'left hand','type':'CreateStatement'},'type':'BlockItem'},{'which':'statement','statement':{'object':'fire','holder':'soul','type':'CreateStatement'},'type':'BlockItem'},{'which':'statement','statement':{'object':{'expr':{'name':'orb','type':'NamedExpression'},'value':{'name':'fire','type':'NamedExpression'},'type':'Modification'},'to':'left hand','type':'MoveStatement'},'type':'BlockItem'},{'which':'statement','statement':{'from':'left hand','type':'ReleaseStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
         // say
         // sendSkill = "{'block':{'items':[{'which':'statement','statement':{'message':'ceva','tone':'say','type':'PrintStatement'},'type':'BlockItem'},{'which':'statement','statement':{'message':'shop','tone':'say','type':'PrintStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
         // throw inventory
         // sendSkill = "{'block':{'items':[{'which':'statement','statement':{'object':{'name':'rock','type':'NamedExpression'},'from':'','to':'left hand','type':'MoveStatement'},'type':'BlockItem'},{'which':'statement','statement':{'from':'left hand','type':'ReleaseStatement'},'type':'BlockItem'}],'type':'Block'},'type':'Document'}".Replace("'", "\"");
         // cast fire 2
-        sendSkill = "{    'block': {        'items': [{'which':'statement','statement':{'message':'lord of daybreak, release thy flames','tone':'say','type':'PrintStatement'},'type':'BlockItem'},            {                'which': 'statement',                'statement': {                    'object': 'fire',                    'holder': 'soul',                    'type': 'CreateStatement'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'object': {                        'name': 'fire',                        'type': 'NamedExpression'                    },                    'to': 'left hand',                    'type': 'MoveStatement'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'from': 'left hand',                    'type': 'ReleaseStatement'                },                'type': 'BlockItem'            }        ],        'type': 'Block'    },    'type': 'Document'}".Replace("'", "\"");
+        // sendSkill = "{    'block': {        'items': [{'which':'statement','statement':{'message':'lord of daybreak, release thy flames','tone':'say','type':'PrintStatement'},'type':'BlockItem'},            {                'which': 'statement',                'statement': {                    'object': 'fire',                    'holder': 'soul',                    'type': 'CreateStatement'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'object': {                        'name': 'fire',                        'type': 'NamedExpression'                    },                    'to': 'left hand',                    'type': 'MoveStatement'                },                'type': 'BlockItem'            },            {                'which': 'statement',                'statement': {                    'from': 'left hand',                    'type': 'ReleaseStatement'                },                'type': 'BlockItem'            }        ],        'type': 'Block'    },    'type': 'Document'}".Replace("'", "\"");
 #endif
 
         stats.hpChanged.AddListener(RefreshHealthBar);
@@ -364,7 +368,7 @@ public class PlayerController : MonoBehaviour
 
     private void Die()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        gm.GameOver();
     }
 
     /* Collision */

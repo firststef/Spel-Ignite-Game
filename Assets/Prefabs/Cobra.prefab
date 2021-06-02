@@ -561,7 +561,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   findRange: 10
-  hitRange: 1.5
+  hitRange: 2
   projectile: {fileID: 0}
   cooldown: 5
   projectileSpeed: 3

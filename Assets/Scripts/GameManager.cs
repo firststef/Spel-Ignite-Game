@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public GameObject shop;
     private int shopIndex = -1;
     private Dictionary<int, Vector3> lastPlayerPos = new Dictionary<int, Vector3>();
+    public bool godMode = false;
 
     private void Awake()
     {
@@ -148,5 +149,15 @@ public class GameManager : MonoBehaviour
             ShopPrev();
             pc.SendUpdateInventory();
         }
+    }
+
+    public void GameOver()
+    {
+        var inv = pc.inventory;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        var new_pc = GameObject.Find("Player").GetComponentInChildren<PlayerController>();
+        new_pc.inventory = inv;
+        new_pc.SendUpdateInventory();
     }
 }

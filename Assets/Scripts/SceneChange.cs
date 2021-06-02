@@ -3,11 +3,11 @@ using UnityEngine;
 public class SceneChange : MonoBehaviour
 {
     public int nextScene = 0;
-    private GameManager manager;
+    private GameManager gm;
 
     private void Awake()
     {
-        manager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -16,9 +16,9 @@ public class SceneChange : MonoBehaviour
         {
             return;
         }
-        if (GameObject.Find("Enemies").transform.childCount != 0)
+        if (!gm.godMode && GameObject.Find("Enemies").transform.childCount != 0)
         {
-            var speech = manager.pc.GetComponentInChildren<SpeechController>();
+            var speech = gm.pc.GetComponentInChildren<SpeechController>();
             var line = "I have to kill every enemy";
             if (speech.currentLine != line)
             {
@@ -27,6 +27,6 @@ public class SceneChange : MonoBehaviour
             return;
         }
 
-        manager.GoToScene(nextScene, transform.Find("ReturnTo").position);
+        gm.GoToScene(nextScene, transform.Find("ReturnTo").position);
     }
 }

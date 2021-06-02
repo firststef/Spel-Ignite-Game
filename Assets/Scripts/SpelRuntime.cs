@@ -13,6 +13,7 @@ public class SpelRuntime : MonoBehaviour
     private StatsController stats;
     private SpeechController speech;
     private PlayerController pc;
+    private GameManager gm;
     public bool vmIsRunning = false;
     public bool cancelling = false;
 
@@ -23,7 +24,8 @@ public class SpelRuntime : MonoBehaviour
         stats = GetComponent<StatsController>();
         speech = stats.GetComponentInChildren<SpeechController>();
         stats.endSpell.AddListener(OnCancel);
-        pc = GetComponent<PlayerController>(); //temp
+        pc = GetComponent<PlayerController>(); //temporary, spelruntime shouldnt reference player controller
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
 
 #if !UNITY_EDITOR && UNITY_WEBGL
         WebGLInput.captureAllKeyboardInput = false;
@@ -276,6 +278,16 @@ public class SpelRuntime : MonoBehaviour
             case "lord of daybreak, release thy flames":
                 isChant = true;
                 stats.AddEffect("fire_charged", null, 5f, () => stats.ClearEffect("fire_charged"));
+                break;
+            case "god":
+            case "God":
+            case "GOD":
+                isChant = true;
+                pc.ChangeGold(99);
+                stats.maxHP = 1000;
+                stats.recoveryHP = 1;
+                stats.recoverHPTime = 1f;
+                gm.godMode = true;
                 break;
         }
         if (isChant)

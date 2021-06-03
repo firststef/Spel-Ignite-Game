@@ -434,6 +434,15 @@ public class PlayerController : MonoBehaviour
                 Destroy(collision.gameObject);
             }
         }
+        if (collision.gameObject.name.StartsWith("Potion"))
+        {
+            var potion = collision.GetComponent<Potion>();
+            if (potion)
+            {
+                stats.AddMana(potion.amount);
+                Destroy(collision.gameObject);
+            }
+        }
     }
 
     /* External */

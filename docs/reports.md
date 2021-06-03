@@ -123,3 +123,35 @@ Features:
 - reload scene on death
 - tutorial png
 - finished working continuous delivery
+
+### __Week 9-10-11__
+- sprite fixes
+- collision changes
+- added bandits (3 characters)
+- changed flame design, added ice skill
+- added cobra
+- added effects and statuses
+- added printing (say system)
+- refactoring runtime
+- added ranged attack to enemies
+- added leaf elemental
+- added transition system, other tweaks
+- added bandit map & fixed combat
+- added witch, frog and witch map
+- readded enemies on first map
+- added shop
+
+### __Week 12__
+- added throw rock
+- added traveling back, npc rotate
+- added first 2 skills back repaired & improved
+- added chant support
+
+### __Week 13__
+- added monster weaknesses to certain skills
+- added a new map which needs the player to use ranged spells
+- various fixes
+
+### __Week 14__
+- added a new map with a puzzle = frozen lake
+- bugfixes

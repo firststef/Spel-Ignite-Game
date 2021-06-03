@@ -309,7 +309,18 @@ public class SpelRuntime : MonoBehaviour
             SayError($"Object ${(string)obj["object"]} could not be created");
             yield break;
         }
-        StoreObject((string)obj["holder"], objInst);
+        var holder = (string)obj["holder"];
+        if (objInst is Element && holder != "soul")
+        {
+            Error("Elements can only be created by the soul");
+        }
+        if (objInst is MagicItem && holder != "left hand")
+        {
+            Error("MagicItems can only be created in your hand");
+        }
+        else {
+            StoreObject(holder, objInst);
+        }
 
         yield return new WaitForSeconds(0.15f);
     }
@@ -359,6 +370,11 @@ public class SpelRuntime : MonoBehaviour
             var name = (string)obj["object"]["name"];
             if ((new[] { "rock", "arrow" }).Any(name.Equals))
             {
+                if (!pc.passives.Contains("sharpshooter"))
+                {
+                    Error("i don't know how to throw");
+                }
+                
                 if (pc.inventory.Contains(name))
                 {
                     found = true;
@@ -454,6 +470,7 @@ public class SpelRuntime : MonoBehaviour
                 }
             }
         }
+        storage.Remove(holder);
 
         yield return new WaitForSeconds(0.05f);
     }
@@ -508,10 +525,6 @@ public class SpelRuntime : MonoBehaviour
         }
         if (skillName == "rock")
         {
-            if (!pc.passives.Contains("sharpshooter"))
-            {
-                Error("i don't know how to throw");
-            }
             return new RangedSkill("rock", stats, pfRock, UtilsClass.GetMousePosition2D());
         }
         if (skillName == "arrow")

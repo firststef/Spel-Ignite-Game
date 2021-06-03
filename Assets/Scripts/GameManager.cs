@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
             pc.inventory.AddRange(item.receive);
             pc.passives.AddRange(item.passives);
             Destroy(item.gameObject);
-            ShopPrev();
+            ShopNext();
             pc.SendUpdateInventory();
         }
     }

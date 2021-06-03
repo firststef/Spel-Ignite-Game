@@ -439,7 +439,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   allegiance: 1
-  weakAgainst: []
+  weakAgainst:
+  - ice
 --- !u!114 &8270476883301539690
 MonoBehaviour:
   m_ObjectHideFlags: 0

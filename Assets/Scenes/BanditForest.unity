@@ -337,7 +337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f51f9cdff315c488b3c853b4c5de34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextScene: 1
+  nextScene: 0
 --- !u!60 &207365767
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -7479,7 +7479,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f51f9cdff315c488b3c853b4c5de34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextScene: 3
+  nextScene: 2
 --- !u!60 &880241578
 PolygonCollider2D:
   m_ObjectHideFlags: 0

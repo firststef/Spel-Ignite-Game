@@ -6,9 +6,9 @@ public class ElementRelease : MonoBehaviour
 {
     ElementSkill skill;
     StatsController st;
-    float sustainManaCost = 2;
+    float sustainManaCost = 3;
     float lastConsumeTime = 0;
-    float timeTillConsume = 3f;
+    float timeTillConsume = 2f;
 
     public void Setup(StatsController stats, Spells.ElementSkill skill)
     {
@@ -29,14 +29,17 @@ public class ElementRelease : MonoBehaviour
         lastConsumeTime += Time.deltaTime;
         if (lastConsumeTime > timeTillConsume)
         {
-            lastConsumeTime = 0;
-            if ((name != "fire" && name != "flames") && !st.effects.Contains("fire_charged"))
+            lastConsumeTime = 0f;
+            float cost = sustainManaCost;
+            if ((name == "fire" || name == "flames") && st.effects.Contains("fire_charged"))
             {
-                st.ConsumeMana(sustainManaCost);
-                if (st.GetMP() < 0)
-                {
-                    Die();
-                }
+                cost = 0.5f;
+            }
+
+            st.ConsumeMana(cost);
+            if (st.GetMP() < 0)
+            {
+                Die();
             }
         }
 

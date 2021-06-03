@@ -48,7 +48,7 @@ namespace Spells
         public GameObject prefab;
 
         public float moveSpeed = 3f;
-        public float damage = 1f;
+        public float damage = 2f;
         public Vector3 scale;
         public Vector3 whereTo;
 
@@ -64,6 +64,11 @@ namespace Spells
             this.prefab = prefab;
             this.whereTo = whereTo;
             scale = prefab.transform.localScale;
+        }
+
+        public new bool isWorthy(StatsController stats)
+        {
+            return stats.GetMP() >= manaCost && !stats.effects.Contains("morphed");
         }
 
         public new void cast()
@@ -149,6 +154,11 @@ namespace Spells
         {
             this.prefab = prefab;
             this.stats = stats;
+        }
+
+        public new bool isWorthy(StatsController stats)
+        {
+            return stats.GetMP() >= manaCost && !stats.effects.Contains("morphed");
         }
 
         public new void cast()

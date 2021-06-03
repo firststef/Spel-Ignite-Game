@@ -525,11 +525,15 @@ public class SpelRuntime : MonoBehaviour
         }
         if (skillName == "rock")
         {
-            return new RangedSkill("rock", stats, pfRock, UtilsClass.GetMousePosition2D());
+            var sk = new RangedSkill("rock", stats, pfRock, UtilsClass.GetMousePosition2D());
+            sk.damage = 3f;
+            return sk;
         }
         if (skillName == "arrow")
         {
-            return new RangedSkill("arrow", stats, pfArrow, UtilsClass.GetMousePosition2D());
+            var sk = new RangedSkill("arrow", stats, pfArrow, UtilsClass.GetMousePosition2D());
+            sk.damage = 3.5f;
+            return sk;
         }
         else
         {

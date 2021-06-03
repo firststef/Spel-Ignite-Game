@@ -127,7 +127,7 @@ public class StatsController : MonoBehaviour
         }
 
         var effective = weakAgainst.Contains(skillName) || amount >= 0.2f * maxHP;
-        var factor = !effective ? 1 : (currentHP / 6 > amount ? 2 : 3);
+        var factor = !effective ? 1 : (currentHP / 6 > amount ? 2.5f : 3.5f);
         currentHP -= amount * factor;
 
         hpChanged.Invoke();

@@ -40,6 +40,10 @@ public class PlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
         mov = GetComponent<GenericMovement>();
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        if (gm.pc != null && gm.pc != this)
+        {
+            return;
+        }
 
         FillUIStuff();
 

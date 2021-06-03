@@ -122,7 +122,7 @@ MonoBehaviour:
   projectile: {fileID: 1436936363267041619, guid: 9d75006448e9bd740b1b488059e04c7f, type: 3}
   cooldown: 0.5
   projectileSpeed: 4
-  projectileDamage: 5
+  projectileDamage: 4
   goldPrefab: {fileID: 1232510664461254067, guid: 9ef53951bbc573e4bb7706b7484f8729, type: 3}
   morph: {fileID: 8270476883301539692, guid: 2b90652ae69be524c96aa05670090930, type: 3}
 --- !u!50 &1692671758463980099

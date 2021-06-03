@@ -283,7 +283,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   allegiance: 0
-  weakAgainst: []
+  weakAgainst:
+  - ice
 --- !u!50 &8886708958527011770
 Rigidbody2D:
   serializedVersion: 4

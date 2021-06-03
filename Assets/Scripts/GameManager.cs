@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     private GameObject persist;
     public GameObject shop;
     private int shopIndex = -1;
-    private Dictionary<int, Vector3> lastPlayerPos = new Dictionary<int, Vector3>();
+    public Dictionary<int, Vector3> lastPlayerPos = new Dictionary<int, Vector3>();
     public bool godMode = false;
 
     private void Awake()

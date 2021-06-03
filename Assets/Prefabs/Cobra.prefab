@@ -522,7 +522,7 @@ MonoBehaviour:
   recoveryMP: 0.5
   recoverMPTime: 30
   maxDamage: 1
-  maxSpeed: 6
+  maxSpeed: 5
   spellOffset: 0.8
   castCounter: 0
   endSpell:

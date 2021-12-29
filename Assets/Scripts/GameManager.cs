@@ -154,10 +154,10 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         var inv = pc.inventory;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(0);
 
-        var new_pc = GameObject.Find("Player").GetComponentInChildren<PlayerController>();
-        new_pc.inventory = inv;
-        new_pc.SendUpdateInventory();
+        // var new_pc = GameObject.Find("Player").GetComponentInChildren<PlayerController>();
+        // new_pc.inventory = inv;
+        // new_pc.SendUpdateInventory();
     }
 }

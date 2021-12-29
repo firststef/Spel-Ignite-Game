@@ -12,7 +12,7 @@ public class StatsController : MonoBehaviour
     private float currentHP;
 
     public float recoveryHP = 0f;
-    public float recoverHPTime = 60f;
+    public float recoverHPTime = 30f;
     private float elapsedHP = 0f;
 
     public float maxMP = 10f;

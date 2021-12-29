@@ -35,8 +35,8 @@ jobs:
           path: build
       
       # Deploy
-      - name: Ping hook
-        uses: fjogeleit/http-request-action@master
-        with:
-          url: 'https://app.buddy.works/firstbossspike/spel-ignite-web/pipelines/pipeline/318411/trigger-webhook?token=53cc0b9d465595a03cfb145718c7133f0f06743c39f859ca374deb6974d1b94609269d2116fb40072ee9c0e7f3ff77db'
-          method: 'GET'
+      # - name: Ping hook
+      #   uses: fjogeleit/http-request-action@master
+      #   with:
+      #     url: 'https://app.buddy.works/firstbossspike/spel-ignite-web/pipelines/pipeline/318411/trigger-webhook?token=53cc0b9d465595a03cfb145718c7133f0f06743c39f859ca374deb6974d1b94609269d2116fb40072ee9c0e7f3ff77db'
+      #     method: 'GET'

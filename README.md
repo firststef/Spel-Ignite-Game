@@ -1,5 +1,7 @@
 # Spel Ignite
 
+![gamegif](docs/gamegif10.gif)
+
 The game is comprised of 4 repositories:
 
 The frontend (where the game is embedded and how the user interacts with the application):

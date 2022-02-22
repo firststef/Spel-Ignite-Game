@@ -104,4 +104,4 @@ Note that some combinations might have some issues, but I do plan on improving t
 
 `CODING:` For any bugs you find, please open an issue on the github repository.
 
-Art credits go to ![elten](https://elthen.itch.io/).
+Art credits go to [elten](https://elthen.itch.io/).

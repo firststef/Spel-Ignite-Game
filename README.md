@@ -1,6 +1,6 @@
 # Spel Ignite
 
-![gamegif](docs/gamegif10.gif)
+![gamegif](docs/gamegif10.gif "Loading showcasing gif... Please wait 30 seconds to load")
 
 The game is comprised of 4 repositories:
 
